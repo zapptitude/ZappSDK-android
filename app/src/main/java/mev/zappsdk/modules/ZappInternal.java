@@ -2,14 +2,11 @@ package mev.zappsdk.modules;
 
 import android.app.AlertDialog;
 import android.net.NetworkInfo;
-import android.util.Base64;
-
 import java.io.File;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import mev.loggersdk.modules.Helper.LCryptoHelper;
 import mev.loggersdk.modules.Helper.LDataSourceHelper;
 import mev.loggersdk.modules.Helper.LEncodeHelper;
 import mev.loggersdk.modules.Helper.LFileHelper;
@@ -17,6 +14,8 @@ import mev.loggersdk.modules.Helper.LInfoHelper;
 import mev.loggersdk.modules.LAppContextStorage;
 import mev.loggersdk.modules.Logger;
 import mev.zappsdk.modules.Helpers.BloomFilter.BloomFilter;
+import mev.zappsdk.modules.Helpers.BloomFilter.Models.ZappBloom;
+import mev.zappsdk.modules.Helpers.SerializeHelper;
 
 /**
  * Created by andrew on 24.03.16.
@@ -24,6 +23,7 @@ import mev.zappsdk.modules.Helpers.BloomFilter.BloomFilter;
 public class ZappInternal {
 
     //region Constants
+
     static final String ZAPP_FILE_NAME = "zapp.bin";
     static final String ZAPP_BLOOM_FILE_NAME = "bloom.bin";
     static final String ZAPP_ID_KEY = "id";
@@ -40,10 +40,11 @@ public class ZappInternal {
     //endregion
 
     //region Properties
+
     boolean isUserDefinedZapp;
     boolean allowNotVerifiedZid;
 
-    char seedFunctions;
+    ArrayList<String> seedFunctions;
 
     String sessionId;
     String zappId;
@@ -54,22 +55,23 @@ public class ZappInternal {
     long sessionStartTime;
     long taskStartTime;
 
-    BloomFilter bloomFilter;
+    public BloomFilter bloomFilter;
 
     static ZappIdView zappIdView;
+
     //endregion
 
     //region Constructors
-    public ZappInternal() {
 
+    public ZappInternal() {
         sessionStartTime = new Date().getTime();
         sessionId = getRandomId();
         taskStartTime = 0;
         zappIdView = new ZappIdView();
 
         // TODO: for a while
-        String appIdentifier = "Get App Identifier";
-        String appVersion = "Get App Version";
+        String appIdentifier = LInfoHelper.getInstance().getPackageName();
+        String appVersion = LInfoHelper.getInstance().getVersion();
         String appId = (appIdentifier == null || appVersion == null) ? "unknownApp" : appIdentifier;
 
         // TODO: What the fuck is this?
@@ -88,7 +90,6 @@ public class ZappInternal {
 //        [[Logger sharedInstance] loggerWithAppID:cleanedAppId];
 
 
-        // TODO: is zappDirURL good name?
         String zappDirPath = LDataSourceHelper.getInternalStoragePath();
 
         if (zappDirPath == null || zappDirPath.isEmpty()) {
@@ -109,14 +110,14 @@ public class ZappInternal {
 //        // If either the zapp state file does not exit or the reading failed,
 //        // initialize the zapp id at random and attempt to save the state.
 
-        String zappFilePath = zappDirPath + ZAPP_FILE_NAME;
-        File zappFile = new File (zappFilePath);
+//        String zappFilePath = zappDirPath + ZAPP_FILE_NAME;
+        File zappFile = new File (ZAPP_FILE_NAME);
 
         // TODO: maybe I should check only last
-        if (!zappFile.exists() || !loadFromFile(zappFilePath)) {
+        if (!zappFile.exists() || !loadFromFile(ZAPP_FILE_NAME)) {
             zappId = getRandomId();
             isUserDefinedZapp = false;
-            saveToFile(zappFilePath);
+            saveToFile(ZAPP_FILE_NAME);
         }
 
         allowNotVerifiedZid = false;
@@ -125,9 +126,11 @@ public class ZappInternal {
             loadDataForBloomFilter();
         }
     }
+
     //endregion
 
     //region ZappId methods
+
     public void setZappId(String zappId) {
         if (this.zappId == null || this.zappId.isEmpty()) {
 
@@ -159,53 +162,6 @@ public class ZappInternal {
         updateOfflineCheckerRules();
     }
 
-
-    //endregion
-
-
-
-    private void updateOfflineCheckerRules() {
-        // TODO: get path
-        String zappDirPath = LDataSourceHelper.getInternalStoragePath();
-
-        String zappBloomFilterPath = zappDirPath + ZAPP_BLOOM_FILE_NAME;
-
-        File zappBloomFilterFile = new File(zappBloomFilterPath);
-
-        // TODO: maybe I should check only last
-        if (!zappBloomFilterFile.exists() || checkBloomFilterFile(zappBloomFilterPath)) {
-            if (LInfoHelper.getInstance().getConnectionInfo() != NetworkInfo.DetailedState.CONNECTED) {
-                AlertDialog alertDialog = new AlertDialog.Builder(LAppContextStorage.getAppContext().getApplicationContext()).setTitle("Zid check error").setMessage("Application is offline and we cannot verify zid. Are you sure you want to continue?").setNeutralButton("Cancel", null).show();
-                alertDialog.show();
-            }
-        }
-    }
-
-    // TODO: complete this
-    private boolean checkBloomFilterFile(String path) {
-//        NSData *zappData = [NSData dataWithContentsOfURL:url];
-//        if (!zappData) {
-//            ZappLog(@"loadFromURL: failed to load %@", url);
-//            return NO;
-//        }
-//        NSKeyedUnarchiver *decoder = [[NSKeyedUnarchiver alloc] initForReadingWithData:zappData];
-//        if (![decoder containsValueForKey:kZappBloomData]) {
-//        ZappLog(@"loadFromURL: no key %@ in %@", kZappBloomData, url);
-//        return NO;
-//        }
-//            NSDictionary *dict = [decoder decodeObjectForKey:kZappBloomData];
-//            [decoder finishDecoding];
-//            ZappLog(@"loadFromURL: successfully loaded bloom data %@ from %@", kZappBloomData, url);
-//
-//            if ([dict objectForKey:@"set"] && [dict objectForKey:@"hashes"]) {
-//            [self configurateBloomFilter:dict];
-//            return YES;
-//        } else {
-//            return NO;
-//        }
-        return true;
-    }
-
     public String userProviderZappId() {
 
         if (isUserDefinedZapp) {
@@ -214,6 +170,10 @@ public class ZappInternal {
 
         return null;
     }
+
+    //endregion
+
+    //region General methods
 
     // TODO: create model
     public HashMap<String, String> sessionInfo() {
@@ -258,15 +218,6 @@ public class ZappInternal {
 
     }
 
-    // TODO: generate random Id
-    private String getRandomId() {
-//        u_int64_t res = arc4random();
-//        return [NSString stringWithFormat:@"Z-%lld", (res << 32) + arc4random()];
-        return "Z-someId";
-    }
-
-
-
     public HashMap<String, String> sessionInfoForTask(String task, String context) {
         HashMap<String, String> result = new HashMap();
         result.put(ZID_KEY, zappId);
@@ -280,9 +231,84 @@ public class ZappInternal {
         taskStartTime = 0;
     }
 
-    private boolean saveToFile(String path) {
-        File file = LDataSourceHelper.getFile(path);
-        return saveToFile(file);
+    public boolean saveBloomFilterToFileWithBitSet(String bitSet, ArrayList<String> hashesArray)
+    {
+        ZappBloom zappBloom = new ZappBloom(bitSet, hashesArray);
+
+        File file = LDataSourceHelper.getFile(ZAPP_BLOOM_FILE_NAME);
+
+        HashMap<String, byte[]> zappData = new HashMap();
+
+        zappData.put(ZAPP_BLOOM_DATA, LEncodeHelper.encode(SerializeHelper.serialize(zappData)));
+
+        LFileHelper.getInstance().writeToFile(file, zappData);
+
+        if (!file.exists() || file.length() == 0) {
+            System.out.print(String.format("saveToFile: failed to save %s", file.getName()));
+            return false;
+        }
+
+        System.out.print(String.format("saveToFile: successfully saved zid %s to %s", zappId, file.getName()));
+
+        allowNotVerifiedZid = false;
+
+        configureBloomFilter(zappBloom);
+
+        return true;
+    }
+
+    public void configureBloomFilter(ZappBloom zappBloom)
+    {
+        seedFunctions = zappBloom.getSeedsArray();
+        bloomFilter = new BloomFilter(zappBloom.getBitSetString().length(), zappBloom.getBitSet(), seedFunctions);
+    }
+
+    //endregion
+
+    //region Internal Methods
+
+    private void updateOfflineCheckerRules() {
+        File zappBloomFilterFile = new File(ZAPP_BLOOM_FILE_NAME);
+
+        // TODO: maybe I should check only last
+        if (!zappBloomFilterFile.exists() || checkBloomFilterFile(ZAPP_BLOOM_FILE_NAME)) {
+            if (LInfoHelper.getInstance().getConnectionInfo() != NetworkInfo.DetailedState.CONNECTED) {
+                AlertDialog alertDialog = new AlertDialog.Builder(LAppContextStorage.getAppContext().getApplicationContext()).setTitle("Zid check error").setMessage("Application is offline and we cannot verify zid. Are you sure you want to continue?").setNeutralButton("Cancel", null).show();
+                alertDialog.show();
+            }
+        }
+    }
+
+    // TODO: complete this
+    private boolean checkBloomFilterFile(String path) {
+//        NSData *zappData = [NSData dataWithContentsOfURL:url];
+//        if (!zappData) {
+//            ZappLog(@"loadFromURL: failed to load %@", url);
+//            return NO;
+//        }
+//        NSKeyedUnarchiver *decoder = [[NSKeyedUnarchiver alloc] initForReadingWithData:zappData];
+//        if (![decoder containsValueForKey:kZappBloomData]) {
+//        ZappLog(@"loadFromURL: no key %@ in %@", kZappBloomData, url);
+//        return NO;
+//        }
+//            NSDictionary *dict = [decoder decodeObjectForKey:kZappBloomData];
+//            [decoder finishDecoding];
+//            ZappLog(@"loadFromURL: successfully loaded bloom data %@ from %@", kZappBloomData, url);
+//
+//            if ([dict objectForKey:@"set"] && [dict objectForKey:@"hashes"]) {
+//            [self configurateBloomFilter:dict];
+//            return YES;
+//        } else {
+//            return NO;
+//        }
+        return true;
+    }
+
+    // TODO: generate random Id
+    private String getRandomId() {
+//        u_int64_t res = arc4random();
+//        return [NSString stringWithFormat:@"Z-%lld", (res << 32) + arc4random()];
+        return "Z-someId";
     }
 
     // TODO: complete this
@@ -317,6 +343,11 @@ public class ZappInternal {
         return true;
     }
 
+    private boolean saveToFile(String path) {
+        File file = LDataSourceHelper.getFile(path);
+        return saveToFile(file);
+    }
+
     private boolean saveToFile(File file) {
         HashMap<String, String> zappData = new HashMap();
 
@@ -347,5 +378,6 @@ public class ZappInternal {
 //    }];
     }
 
+    //endregion
 
 }

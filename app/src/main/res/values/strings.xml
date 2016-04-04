@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ZappSDK</string>
+
+    <string name="title_activity_zapp_id">ZappIdActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

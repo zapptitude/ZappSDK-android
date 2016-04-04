@@ -7,12 +7,21 @@ import java.util.HashMap;
  */
 public class Zapptitude {
 
+    //region Properties
+
     public ZappInternal zappInternal;
 
-    // TODO: Dispatch once?
+    //endregion
+
+    //region Constructors
+
     public Zapptitude() {
         zappInternal = new ZappInternal();
     }
+
+    //endregion
+
+    //region General methods
 
     public void requestZappId() {
         zappInternal.requestZappId();
@@ -59,5 +68,7 @@ public class Zapptitude {
         ZappEventLogger.getInstance().logSolveGradTask(task, context, topics, expected, actual, among, zappInternal.sessionInfoForTask(task, context));
         zappInternal.resetTaskStartTime();
     }
+
+    //endregion
 
 }

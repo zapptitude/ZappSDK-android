@@ -10,6 +10,7 @@ import mev.loggersdk.modules.Logger;
 public class ZappEventLogger {
 
     //region Constants
+
     public static final String Z_EVENT_KEY = "ZEvent";
     public static final String Z_BEGIN_TASK_KEY = "ZBeginTask";
     public static final String Z_SOLVE_TASK_KEY = "ZSolveTask";
@@ -27,6 +28,7 @@ public class ZappEventLogger {
     public static final String FLOAT_KEY = "float";
     public static final String MC_KEY = "mc";
     public static final String GRAD_KEY = "grad";
+
     //endregion
 
     //region Singleton
@@ -36,6 +38,8 @@ public class ZappEventLogger {
         return instance != null ? instance : (instance = new ZappEventLogger());
     }
     //endregion
+
+    //region General methods
 
     public void logEvent(String event, HashMap<String, String> info)
     {
@@ -129,5 +133,7 @@ public class ZappEventLogger {
     {
         return !string.isEmpty() ? string : null;
     }
+
+    //endregion
 
 }

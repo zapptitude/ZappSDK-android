@@ -5,8 +5,12 @@ package mev.zappsdk.modules;
  */
 public class ZappIdView {
 
+    //region General methods
+
     public void requestZappId(String zappId) {
 
     }
+
+    //endregion
 
 }

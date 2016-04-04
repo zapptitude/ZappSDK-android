@@ -5,6 +5,8 @@ package mev.zappsdk.modules;
  */
 public class ZappConstantManager {
 
+    // TODO: MOVE THIS TO ANDROID STRINGS
+
     public static final String kHowText = "This %@ app uses Zapptitude to save some activity crumbs while you are interacting with the app. " +
             "This information can be used by the app developer to better understand how users interact with the app, and improve user experience with the app.\n\n" +
             "The same information can be compiled into valuable reports for you, the user, assuming you can be linked to your activity crumbs. " +
