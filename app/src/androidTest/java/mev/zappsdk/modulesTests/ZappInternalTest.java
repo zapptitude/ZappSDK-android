@@ -56,15 +56,14 @@ public class ZappInternalTest extends AndroidTestCase {
 
         LAppContextStorage.appContext = getContext();
 
-        ZappInternal zappInternal = new ZappInternal();
-        zappInternal.saveBloomFilterToFileWithBitSet(bitSet, hashes);
+        ZappInternal.getInstance().saveBloomFilterToFile(bitSet, hashes);
 
-        assertTrue(zappInternal.bloomFilter.contains("john.smith"));
-        assertTrue(zappInternal.bloomFilter.contains("kathy.hudson"));
-        assertFalse(zappInternal.bloomFilter.contains("obama"));
-        assertTrue(zappInternal.bloomFilter.contains("mae.dunn"));
-        assertTrue(zappInternal.bloomFilter.contains("jacob.young"));
-        assertFalse(zappInternal.bloomFilter.contains("peeter"));
+        assertTrue(ZappInternal.getInstance().bloomFilter.contains("john.smith"));
+        assertTrue(ZappInternal.getInstance().bloomFilter.contains("kathy.hudson"));
+        assertFalse(ZappInternal.getInstance().bloomFilter.contains("obama"));
+        assertTrue(ZappInternal.getInstance().bloomFilter.contains("mae.dunn"));
+        assertTrue(ZappInternal.getInstance().bloomFilter.contains("jacob.young"));
+        assertFalse(ZappInternal.getInstance().bloomFilter.contains("peeter"));
     }
 
 }

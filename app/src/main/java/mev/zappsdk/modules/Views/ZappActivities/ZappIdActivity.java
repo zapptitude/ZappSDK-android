@@ -29,4 +29,12 @@ public class ZappIdActivity extends AppCompatActivity {
 
     //endregion
 
+    //region General methods
+
+    public void requestZappId(String zappId) {
+       // TODO: show activity here!
+    }
+
+    //endregion
+
 }

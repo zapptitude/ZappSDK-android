@@ -16,7 +16,7 @@ public class Zapptitude {
     //region Constructors
 
     public Zapptitude() {
-        zappInternal = new ZappInternal();
+        zappInternal = ZappInternal.getInstance();
     }
 
     //endregion

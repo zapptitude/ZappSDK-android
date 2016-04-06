@@ -2,6 +2,8 @@ package mev.zappsdk.modules;
 
 import android.app.AlertDialog;
 import android.net.NetworkInfo;
+import android.util.Log;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,7 +17,11 @@ import mev.loggersdk.modules.LAppContextStorage;
 import mev.loggersdk.modules.Logger;
 import mev.zappsdk.modules.Helpers.BloomFilter.BloomFilter;
 import mev.zappsdk.modules.Helpers.BloomFilter.Models.ZappBloom;
-import mev.zappsdk.modules.Helpers.SerializeHelper;
+import mev.zappsdk.modules.Helpers.ZappResultHandler;
+import mev.zappsdk.modules.Helpers.ZappResultHandler.*;
+import mev.zappsdk.modules.Helpers.ZappSerializeHelper;
+import mev.zappsdk.modules.Services.ZappCheckZappIdService.ZappCheckZappIdService;
+import mev.zappsdk.modules.Views.ZappActivities.ZappIdActivity;
 
 /**
  * Created by andrew on 24.03.16.
@@ -37,6 +43,24 @@ public class ZappInternal {
     static final String ZID_DURATION = "duration";
     static final String ZID_TIME = "time";
 
+    static final String ERROR_SAVE_TO_FILE_FAILED_TEXT= "saveToFile: failed to save %s";
+    static final String ERROR_LOAD_FROM_FILE_FAILED_TEXT= "loadFromFile: failed to load %s";
+    static final String ERROR_LOAD_FROM_BLOOM_FILE_FAILED_TEXT= "loadBloomFilterDataFromFile: failed to load %s";
+    static final String ERROR_NO_SUCH_KEY_TEXT = "No such key %s in %s";
+    static final String ERROR_FAILED_TO_LOAD_DATA_TEXT = "loadFromFile: Failed to load data from file %s";
+    static final String ERROR_FAILED_TO_LOAD_BLOOM_DATA_TEXT = "loadBloomFilterDataFromFile: Failed load bloom filter data: %s";
+    static final String ERROR_ZAPPBLOOM_OBJECT_IS_EMPTY = "zappBloom object is empty";
+
+    static final String SAVE_TO_FILE_SUCCESSFUL_TEXT = "saveToFile: successfully saved zid %s to %s";
+    static final String SAVE_BLOOM_TO_FILE_SUCCESSFUL_TEXT = "saveBloomFilterToFile: successfully saved zid %s to %s";
+    static final String LOAD_FROM_FILE_SUCCESSFUL_TEXT = "loadFromFile: successfully loaded zid %s from %s";
+    static final String LOAD_BLOOM_FROM_FILE_SUCCESSFUL_TEXT = "loadBloomFilterDataFromFile: successfully loaded zid %s from %s";
+
+    static final String UNKNOWN_APP_TEXT = "unknownApp";
+
+
+
+
     //endregion
 
     //region Properties
@@ -57,22 +81,28 @@ public class ZappInternal {
 
     public BloomFilter bloomFilter;
 
-    static ZappIdView zappIdView;
+    static ZappIdActivity zappIdActivity;
 
     //endregion
 
+    private static ZappInternal instance;
+
+    public static ZappInternal getInstance() {
+        return instance != null ? instance : (instance = new ZappInternal());
+    }
+
     //region Constructors
 
-    public ZappInternal() {
+    private ZappInternal() {
         sessionStartTime = new Date().getTime();
         sessionId = getRandomId();
         taskStartTime = 0;
-        zappIdView = new ZappIdView();
+        zappIdActivity = new ZappIdActivity();
 
         // TODO: for a while
         String appIdentifier = LInfoHelper.getInstance().getPackageName();
         String appVersion = LInfoHelper.getInstance().getVersion();
-        String appId = (appIdentifier == null || appVersion == null) ? "unknownApp" : appIdentifier;
+        String appId = (appIdentifier == null || appVersion == null) ? UNKNOWN_APP_TEXT : appIdentifier;
 
         // TODO: What the fuck is this?
 //        NSError *error = NULL;
@@ -90,11 +120,13 @@ public class ZappInternal {
 //        [[Logger sharedInstance] loggerWithAppID:cleanedAppId];
 
 
+
+        // TODO: check this
         String zappDirPath = LDataSourceHelper.getInternalStoragePath();
 
         if (zappDirPath == null || zappDirPath.isEmpty()) {
             // TODO: remove simple print
-            System.out.print(String.format("could not create directory %s", zappDirPath));
+            Log.d(ZappInternal.class.getSimpleName(), String.format("could not create directory %s", zappDirPath));
             zappId = new String(sessionId);
             isUserDefinedZapp = false;
             return;
@@ -114,7 +146,7 @@ public class ZappInternal {
         File zappFile = new File (ZAPP_FILE_NAME);
 
         // TODO: maybe I should check only last
-        if (!zappFile.exists() || !loadFromFile(ZAPP_FILE_NAME)) {
+        if (!loadFromFile(ZAPP_FILE_NAME)) {
             zappId = getRandomId();
             isUserDefinedZapp = false;
             saveToFile(ZAPP_FILE_NAME);
@@ -148,17 +180,11 @@ public class ZappInternal {
             isUserDefinedZapp = true;
         }
 
-//        // TODO: check this
-//        String zappDirPath = LDataSourceHelper.getInternalStoragePath();
-//        if (zappDirPath == null || zappDirPath.isEmpty()) {
-//            return;
-//        }
-//        String zappFilePath = zappDirPath + ZAPP_FILE_NAME;
         saveToFile(LDataSourceHelper.getFile(ZAPP_FILE_NAME));
     }
 
     public void requestZappId() {
-        zappIdView.requestZappId(isUserDefinedZapp ? zappId : null);
+        zappIdActivity.requestZappId(isUserDefinedZapp ? zappId : null);
         updateOfflineCheckerRules();
     }
 
@@ -231,24 +257,24 @@ public class ZappInternal {
         taskStartTime = 0;
     }
 
-    public boolean saveBloomFilterToFileWithBitSet(String bitSet, ArrayList<String> hashesArray)
+    public boolean saveBloomFilterToFile(String bitSet, ArrayList<String> hashesArray)
     {
         ZappBloom zappBloom = new ZappBloom(bitSet, hashesArray);
 
         File file = LDataSourceHelper.getFile(ZAPP_BLOOM_FILE_NAME);
 
-        HashMap<String, byte[]> zappData = new HashMap();
+        HashMap<String, byte[]> bloomFilterData = new HashMap();
 
-        zappData.put(ZAPP_BLOOM_DATA, LEncodeHelper.encode(SerializeHelper.serialize(zappData)));
+        bloomFilterData.put(ZAPP_BLOOM_DATA, LEncodeHelper.encode(ZappSerializeHelper.serialize(zappBloom)));
 
-        LFileHelper.getInstance().writeToFile(file, zappData);
+        LFileHelper.getInstance().writeToFile(file, bloomFilterData);
 
         if (!file.exists() || file.length() == 0) {
-            System.out.print(String.format("saveToFile: failed to save %s", file.getName()));
+            Log.d(ZappInternal.class.getSimpleName(), String.format(ERROR_SAVE_TO_FILE_FAILED_TEXT, file.getName()));
             return false;
         }
 
-        System.out.print(String.format("saveToFile: successfully saved zid %s to %s", zappId, file.getName()));
+        Log.d(ZappInternal.class.getSimpleName(), String.format(SAVE_BLOOM_TO_FILE_SUCCESSFUL_TEXT, zappId, file.getName()));
 
         allowNotVerifiedZid = false;
 
@@ -268,10 +294,7 @@ public class ZappInternal {
     //region Internal Methods
 
     private void updateOfflineCheckerRules() {
-        File zappBloomFilterFile = new File(ZAPP_BLOOM_FILE_NAME);
-
-        // TODO: maybe I should check only last
-        if (!zappBloomFilterFile.exists() || checkBloomFilterFile(ZAPP_BLOOM_FILE_NAME)) {
+        if (loadBloomFilterDataFromFile(ZAPP_BLOOM_FILE_NAME)) {
             if (LInfoHelper.getInstance().getConnectionInfo() != NetworkInfo.DetailedState.CONNECTED) {
                 AlertDialog alertDialog = new AlertDialog.Builder(LAppContextStorage.getAppContext().getApplicationContext()).setTitle("Zid check error").setMessage("Application is offline and we cannot verify zid. Are you sure you want to continue?").setNeutralButton("Cancel", null).show();
                 alertDialog.show();
@@ -280,27 +303,39 @@ public class ZappInternal {
     }
 
     // TODO: complete this
-    private boolean checkBloomFilterFile(String path) {
-//        NSData *zappData = [NSData dataWithContentsOfURL:url];
-//        if (!zappData) {
-//            ZappLog(@"loadFromURL: failed to load %@", url);
-//            return NO;
-//        }
-//        NSKeyedUnarchiver *decoder = [[NSKeyedUnarchiver alloc] initForReadingWithData:zappData];
-//        if (![decoder containsValueForKey:kZappBloomData]) {
-//        ZappLog(@"loadFromURL: no key %@ in %@", kZappBloomData, url);
-//        return NO;
-//        }
-//            NSDictionary *dict = [decoder decodeObjectForKey:kZappBloomData];
-//            [decoder finishDecoding];
-//            ZappLog(@"loadFromURL: successfully loaded bloom data %@ from %@", kZappBloomData, url);
-//
-//            if ([dict objectForKey:@"set"] && [dict objectForKey:@"hashes"]) {
-//            [self configurateBloomFilter:dict];
-//            return YES;
-//        } else {
-//            return NO;
-//        }
+    private boolean loadBloomFilterDataFromFile(String path) {
+
+        File file = new File(path);
+
+        if (file == null || !file.exists() || file.length() == 0) {
+            Log.d(ZappInternal.class.getSimpleName(), String.format(ERROR_LOAD_FROM_BLOOM_FILE_FAILED_TEXT, file.getName()));
+            return false;
+        }
+
+        HashMap<String, byte[]> bloomFilterData = (HashMap) LFileHelper.getInstance().readHashMapFromFile(file);
+
+
+        if (bloomFilterData == null) {
+            Log.d(ZappInternal.class.getSimpleName(), String.format(ERROR_FAILED_TO_LOAD_BLOOM_DATA_TEXT, file.getName()));
+            return false;
+        }
+
+        if (!bloomFilterData.containsKey(ZAPP_BLOOM_DATA)) {
+            Log.d(ZappInternal.class.getSimpleName(), String.format(ERROR_NO_SUCH_KEY_TEXT, ZAPP_BLOOM_DATA));
+            return false;
+        }
+
+        ZappBloom zappBloom = (ZappBloom) ZappSerializeHelper.deserialize(LEncodeHelper.decode(bloomFilterData.get(ZAPP_BLOOM_DATA)));
+
+        if (zappBloom.getBitSet() == null || zappBloom.getSeedsArray() == null) {
+            Log.d(ZappInternal.class.getSimpleName(), String.format(ERROR_ZAPPBLOOM_OBJECT_IS_EMPTY, ZAPP_BLOOM_DATA));
+            return false;
+        }
+
+        configureBloomFilter(zappBloom);
+
+        Log.d(ZappInternal.class.getSimpleName(), String.format(LOAD_BLOOM_FROM_FILE_SUCCESSFUL_TEXT, zappId, path));
+
         return true;
     }
 
@@ -311,34 +346,34 @@ public class ZappInternal {
         return "Z-someId";
     }
 
-    // TODO: complete this
     private boolean loadFromFile(String path) {
+
         File file = new File(path);
 
         if (file == null || !file.exists() || file.length() == 0) {
-            System.out.print(String.format("loadFromFile: failed to load %s", file.getName()));
+            Log.d(ZappInternal.class.getSimpleName(), String.format(ERROR_LOAD_FROM_FILE_FAILED_TEXT, file.getName()));
             return false;
         }
 
         HashMap<String, String> zappData = (HashMap) LFileHelper.getInstance().readHashMapFromFile(file);
 
         if (zappData == null) {
-            System.out.print("zappData is null");
+            Log.d(ZappInternal.class.getSimpleName(), String.format(ERROR_FAILED_TO_LOAD_DATA_TEXT, file.getName()));
             return false;
         }
 
         if (!zappData.containsKey(ZAPP_ID_KEY)) {
-            System.out.print(String.format("No such key %s in %s", ZAPP_ID_KEY, path));
+            Log.d(ZappInternal.class.getSimpleName(), String.format(ERROR_NO_SUCH_KEY_TEXT, ZAPP_ID_KEY, path));
             return false;
         }
         zappId = LEncodeHelper.getDecodedString(zappData.get(ZAPP_ID_KEY));
         if (!zappData.containsKey(ZAPP_ID_SET_BY_USER_KEY)) {
-            System.out.print(String.format("No such key %s in %s", ZAPP_ID_SET_BY_USER_KEY, path));
+            Log.d(ZappInternal.class.getSimpleName(), String.format(ERROR_NO_SUCH_KEY_TEXT, ZAPP_ID_SET_BY_USER_KEY, path));
             return false;
         }
         isUserDefinedZapp = Boolean.valueOf(LEncodeHelper.getDecodedString(zappData.get(ZAPP_ID_SET_BY_USER_KEY)));
 
-        System.out.print(String.format("loadFromFile: successfully loaded zid %s from %s", zappId, path));
+        Log.d(ZappInternal.class.getSimpleName(), String.format(LOAD_FROM_FILE_SUCCESSFUL_TEXT, zappId, path));
 
         return true;
     }
@@ -357,27 +392,54 @@ public class ZappInternal {
         LFileHelper.getInstance().writeToFile(file, zappData);
 
         if (!file.exists() || file.length() == 0) {
-            System.out.print(String.format("saveToFile: failed to save %s", file.getName()));
+            Log.d(ZappInternal.class.getSimpleName(), String.format(ERROR_SAVE_TO_FILE_FAILED_TEXT, file.getName()));
             return false;
         }
 
-        System.out.print(String.format("saveToFile: successfully saved zid %s to %s", zappId, file.getName()));
+        Log.d(ZappInternal.class.getSimpleName(), String.format(SAVE_TO_FILE_SUCCESSFUL_TEXT, zappId, file.getName()));
 
         return true;
     }
 
     private void loadDataForBloomFilter() {
-//        ZappCheckZIDService.loadOfflineCheckInfoSucces
-//        [ZappCheckZIDService loadOfflineCheckInfoSucces:^(NSDictionary *response) {
-//        if ([response objectForKey:@"result"] && ((NSArray *)[response objectForKey:@"result"]).count) {
+
+        SuccessHandler successHandler = new SuccessHandler() {
+
+            @Override
+            public void onSuccess(String result) {
+                // TODO: PARSE DATA
+                //        if ([response objectForKey:@"result"] && ((NSArray *)[response objectForKey:@"result"]).count) {
 //            [self saveBloomFilterToFileWithBitSet:[[response objectForKey:@"result"] objectForKey:@"set"]
 //            hashesArray:[[response objectForKey:@"result"] objectForKey:@"hashes"]];
 //        }
-//    } failure:^(NSError *error) {
-//        ZappLog(@"Failed load bloom filter data: %@", error);
-//    }];
+            }
+
+        };
+
+        FailHandler failHandler = new FailHandler() {
+
+            @Override
+            public void onFail(String errorMessage) {
+                Log.d(ZappInternal.class.getSimpleName(), String.format(ERROR_FAILED_TO_LOAD_BLOOM_DATA_TEXT, errorMessage));
+            }
+
+        };
+
+        ZappResultHandler resultHandler = new ZappResultHandler(successHandler, failHandler);
+
+        ZappCheckZappIdService.loadOfflineCheckInfoSuccess(resultHandler);
+
     }
 
     //endregion
+
+    public boolean checkOfflineZID(String zappId) {
+        return bloomFilter.contains(zappId.toLowerCase()) || allowNotVerifiedZid;
+    }
+
+    public void checkZappId(String zappId, ZappResultHandler resultHandler) {
+        ZappCheckZappIdService.checkZappId(zappId, resultHandler);
+    }
+
 
 }

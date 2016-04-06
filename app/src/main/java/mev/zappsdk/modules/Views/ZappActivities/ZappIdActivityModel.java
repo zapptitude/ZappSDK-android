@@ -5,6 +5,7 @@ import android.net.NetworkInfo;
 
 import mev.loggersdk.modules.Helper.LInfoHelper;
 import mev.zappsdk.R;
+import mev.zappsdk.modules.Helpers.ZappResultHandler;
 import mev.zappsdk.modules.ZappInternal;
 
 /**
@@ -24,8 +25,29 @@ public class ZappIdActivityModel {
             // TODO: close activity
         } else if (!zappId.isEmpty()) {
             if (LInfoHelper.getInstance().getConnectionInfo() == NetworkInfo.DetailedState.CONNECTED) {
+
+                ZappResultHandler.SuccessHandler successHandler = new ZappResultHandler.SuccessHandler() {
+
+                    @Override
+                    public void onSuccess(String result) {
+
+                    }
+
+                };
+
+                ZappResultHandler.FailHandler failHandler = new ZappResultHandler.FailHandler() {
+
+                    @Override
+                    public void onFail(String errorMessage) {
+
+                    }
+
+                };
+
+                ZappResultHandler resultHandler = new ZappResultHandler(successHandler, failHandler);
+
                 // TODO: Success???
-                ZappInternal.getInstance().checkZappId(zappId);
+                ZappInternal.getInstance().checkZappId(zappId, resultHandler);
 
 //                [internalZapp checkZID:zid succes:^(NSDictionary *response) {
 //                    [internalZapp setZappId:zid];

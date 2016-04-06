@@ -11,7 +11,7 @@ import java.io.ObjectOutputStream;
  */
 public class ZappSerializeHelper {
 
-    //region Static methods
+    //region General methods
     public static byte[] serialize(Object obj) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         ObjectOutputStream os = null;
