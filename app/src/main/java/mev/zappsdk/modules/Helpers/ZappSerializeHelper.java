@@ -9,7 +9,7 @@ import java.io.ObjectOutputStream;
 /**
  * Created by andrew on 01.04.16.
  */
-public class SerializeHelper {
+public class ZappSerializeHelper {
 
     //region Static methods
     public static byte[] serialize(Object obj) {
