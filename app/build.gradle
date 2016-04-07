@@ -23,3 +23,29 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.2.0'
     compile 'com.android.support:support-v4:23.2.0'
 }
+
+task jarTask(type: Jar) {
+    baseName="zappSDK"
+    from 'src/main/java'
+}
+
+task createJarWithDependencies(type: Jar) {
+    baseName = "zappSDK"
+
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+
+    }
+
+    with jarTask
+}
+
+configurations {
+    jarConfiguration
+}
+
+artifacts {
+    jarConfiguration jarTask
+}

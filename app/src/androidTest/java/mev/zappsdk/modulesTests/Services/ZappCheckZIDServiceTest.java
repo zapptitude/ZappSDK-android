@@ -17,7 +17,7 @@ public class ZappCheckZIDServiceTest extends AndroidTestCase {
     }
 
     public void testCheckZappId() {
-        ZappCheckZappIdService.checkZappId("mikola");
+        ZappCheckZappIdService.checkZappId("mikola", null);
     }
 
 }
