@@ -44,16 +44,20 @@
 
         </RelativeLayout>
 
-
-
         <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp">
 
             <TextView
+                android:id="@+id/info_textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
                 android:textSize="@dimen/normal_text_size"
                 android:textColor="@android:color/black"
                 android:text="@string/how_text"/>

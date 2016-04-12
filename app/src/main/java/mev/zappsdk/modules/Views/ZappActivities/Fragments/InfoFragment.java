@@ -9,7 +9,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import mev.loggersdk.modules.Helper.LInfoHelper;
+import mev.loggersdk.modules.LApplication;
 import mev.zappsdk.R;
 
 public class InfoFragment extends Fragment {
@@ -38,6 +41,7 @@ public class InfoFragment extends Fragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_info, container, false);
 
+        initControls();
         setListeners();
 
         return rootView;
@@ -57,8 +61,13 @@ public class InfoFragment extends Fragment {
 
     //region Internal methods
 
+    private void initControls() {
+        TextView infoTextView = (TextView) rootView.findViewById(R.id.info_textView);
+        infoTextView.setText(String.format(getContext().getString(R.string.how_text), LInfoHelper.getInstance().getPackageName()));
+    }
+
     private void setListeners() {
-        rootView.findViewById(R.id.anonymous_button).setOnTouchListener(closeButtonTouchListener);
+        rootView.findViewById(R.id.close_button).setOnTouchListener(closeButtonTouchListener);
     }
 
     //endregion

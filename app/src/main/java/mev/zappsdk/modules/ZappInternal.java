@@ -4,16 +4,22 @@ import android.app.AlertDialog;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Random;
 
 import mev.loggersdk.modules.Helper.LDataSourceHelper;
 import mev.loggersdk.modules.Helper.LEncodeHelper;
 import mev.loggersdk.modules.Helper.LFileHelper;
 import mev.loggersdk.modules.Helper.LInfoHelper;
-import mev.loggersdk.modules.LAppContextStorage;
 import mev.loggersdk.modules.Logger;
 import mev.zappsdk.modules.Helpers.BloomFilter.BloomFilter;
 import mev.zappsdk.modules.Helpers.BloomFilter.Models.ZappBloom;
@@ -58,8 +64,10 @@ public class ZappInternal {
 
     static final String UNKNOWN_APP_TEXT = "unknownApp";
 
+    static final String Z_ID_FORMAT = "Z-%d";
 
-
+    static final String REGULAR_EXPRESSION = "[^a-zA-Z0-9.-]";
+    static final String REPLACEMENT = "_";
 
     //endregion
 
@@ -99,53 +107,26 @@ public class ZappInternal {
         taskStartTime = 0;
         zappIdActivity = new ZappIdActivity();
 
-        // TODO: for a while
         String appIdentifier = LInfoHelper.getInstance().getPackageName();
         String appVersion = LInfoHelper.getInstance().getVersion();
         String appId = (appIdentifier == null || appVersion == null) ? UNKNOWN_APP_TEXT : appIdentifier;
 
-        // TODO: What the fuck is this?
-//        NSError *error = NULL;
-//        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[^A-Za-z0-9._\\-]"
-//        options:NSRegularExpressionCaseInsensitive
-//        error:&error];
-        // TODO: for a while
-        String cleanedAppId = "cleanedAppId";
-//        NSString *cleanedAppId = [regex stringByReplacingMatchesInString:appId
-//        options:0
-//        range:NSMakeRange(0, [appId length])
-//        withTemplate:@"_"];
-
+        String cleanedAppId = appId.replaceAll(REGULAR_EXPRESSION, REPLACEMENT);
         Logger.getInstance().loggerWithAppID(cleanedAppId);
-//        [[Logger sharedInstance] loggerWithAppID:cleanedAppId];
-
 
 
         // TODO: check this
         String zappDirPath = LDataSourceHelper.getInternalStoragePath();
 
         if (zappDirPath == null || zappDirPath.isEmpty()) {
-            // TODO: remove simple print
+
             Log.d(ZappInternal.class.getSimpleName(), String.format("could not create directory %s", zappDirPath));
             zappId = new String(sessionId);
             isUserDefinedZapp = false;
             return;
         }
-//
-//        [[NSNotificationCenter defaultCenter] addObserver:self
-//        selector:@selector(_appWillEnterForeground)
-//        name:UIApplicationWillEnterForegroundNotification
-//        object:nil];
-//
 
-//        // Check if the zapp state file exists and if it does read zapp state from it.
-//        // If either the zapp state file does not exit or the reading failed,
-//        // initialize the zapp id at random and attempt to save the state.
 
-//        String zappFilePath = zappDirPath + ZAPP_FILE_NAME;
-        File zappFile = new File (ZAPP_FILE_NAME);
-
-        // TODO: maybe I should check only last
         if (!loadFromFile(ZAPP_FILE_NAME)) {
             zappId = getRandomId();
             isUserDefinedZapp = false;
@@ -201,7 +182,6 @@ public class ZappInternal {
 
     //region General methods
 
-    // TODO: create model
     public HashMap<String, String> sessionInfo() {
         HashMap<String, String> result = new HashMap();
 
@@ -296,16 +276,15 @@ public class ZappInternal {
     private void updateOfflineCheckerRules() {
         if (loadBloomFilterDataFromFile(ZAPP_BLOOM_FILE_NAME)) {
             if (LInfoHelper.getInstance().getConnectionInfo() != NetworkInfo.DetailedState.CONNECTED) {
-                AlertDialog alertDialog = new AlertDialog.Builder(LAppContextStorage.getAppContext().getApplicationContext()).setTitle("Zid check error").setMessage("Application is offline and we cannot verify zid. Are you sure you want to continue?").setNeutralButton("Cancel", null).show();
+                AlertDialog alertDialog = new AlertDialog.Builder(ZApplication.getAppContext().getApplicationContext()).setTitle("Zid check error").setMessage("Application is offline and we cannot verify zid. Are you sure you want to continue?").setNeutralButton("Cancel", null).show();
                 alertDialog.show();
             }
         }
     }
 
-    // TODO: complete this
     private boolean loadBloomFilterDataFromFile(String path) {
 
-        File file = new File(path);
+        File file = LDataSourceHelper.getFile(path);
 
         if (file == null || !file.exists() || file.length() == 0) {
             Log.d(ZappInternal.class.getSimpleName(), String.format(ERROR_LOAD_FROM_BLOOM_FILE_FAILED_TEXT, file.getName()));
@@ -339,16 +318,14 @@ public class ZappInternal {
         return true;
     }
 
-    // TODO: generate random Id
     private String getRandomId() {
-//        u_int64_t res = arc4random();
-//        return [NSString stringWithFormat:@"Z-%lld", (res << 32) + arc4random()];
-        return "Z-someId";
+        SecureRandom secureRandom = new SecureRandom();
+        return String.format(Z_ID_FORMAT, Math.abs(secureRandom.nextLong()));
     }
 
     private boolean loadFromFile(String path) {
 
-        File file = new File(path);
+        File file = LDataSourceHelper.getFile(path);
 
         if (file == null || !file.exists() || file.length() == 0) {
             Log.d(ZappInternal.class.getSimpleName(), String.format(ERROR_LOAD_FROM_FILE_FAILED_TEXT, file.getName()));
@@ -407,11 +384,23 @@ public class ZappInternal {
 
             @Override
             public void onSuccess(String result) {
-                // TODO: PARSE DATA
-                //        if ([response objectForKey:@"result"] && ((NSArray *)[response objectForKey:@"result"]).count) {
-//            [self saveBloomFilterToFileWithBitSet:[[response objectForKey:@"result"] objectForKey:@"set"]
-//            hashesArray:[[response objectForKey:@"result"] objectForKey:@"hashes"]];
-//        }
+
+                String bitSet = new String();
+                ArrayList<String> hashes = new ArrayList();
+                try {
+                    JSONObject root = new JSONObject(result);
+                    JSONObject resultArray = root.getJSONObject("result");
+
+                    bitSet = resultArray.getString("set");
+                    JSONArray hashesArray  = resultArray.getJSONArray("hashes");
+                    for(int i = 0; i < hashesArray.length(); i++){
+                        hashes.add(hashesArray.getString(i));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                saveBloomFilterToFile(bitSet, hashes);
             }
 
         };
@@ -427,7 +416,7 @@ public class ZappInternal {
 
         ZappResultHandler resultHandler = new ZappResultHandler(successHandler, failHandler);
 
-        ZappCheckZappIdService.loadOfflineCheckInfoSuccess(resultHandler);
+        ZappCheckZappIdService.loadOfflineCheckInfo(resultHandler);
 
     }
 

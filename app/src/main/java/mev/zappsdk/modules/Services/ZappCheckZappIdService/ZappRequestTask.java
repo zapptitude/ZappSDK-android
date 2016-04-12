@@ -115,7 +115,7 @@ public class ZappRequestTask extends AsyncTask<Void, Void, ZappRequestTask.ZappR
 
         } catch (Exception e) {
 
-            new ZappResult(false, e.getLocalizedMessage());
+            return new ZappResult(false, e.getLocalizedMessage());
 
         } finally {
 
@@ -149,7 +149,7 @@ public class ZappRequestTask extends AsyncTask<Void, Void, ZappRequestTask.ZappR
 
         } catch (Exception e) {
 
-            new ZappResult(false, e.getLocalizedMessage());
+            return new ZappResult(false, e.getLocalizedMessage());
 
         } finally {
 

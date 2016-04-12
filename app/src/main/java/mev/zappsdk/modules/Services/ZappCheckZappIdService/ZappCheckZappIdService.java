@@ -1,8 +1,8 @@
 package mev.zappsdk.modules.Services.ZappCheckZappIdService;
 
-import mev.loggersdk.modules.LAppContextStorage;
 import mev.zappsdk.R;
 import mev.zappsdk.modules.Helpers.ZappResultHandler;
+import mev.zappsdk.modules.ZApplication;
 
 import android.net.Uri;
 
@@ -18,21 +18,20 @@ public class ZappCheckZappIdService {
 
     public static void checkZappId(String zappId, ZappResultHandler resultHandler) {
 
-        Uri builtUri = Uri.parse(LAppContextStorage.getAppContext().getString(R.string.apiURL)).buildUpon()
-                .appendPath(LAppContextStorage.getAppContext().getString(R.string.check))
+        Uri builtUri = Uri.parse(ZApplication.getAppContext().getString(R.string.apiURL)).buildUpon()
+                .appendPath(ZApplication.getAppContext().getString(R.string.check))
                 .appendPath(zappId)
                 .build();
 
         doRequestTask(builtUri, resultHandler);
     }
 
-    public static void loadOfflineCheckInfoSuccess(ZappResultHandler resultHandler) {
+    public static void loadOfflineCheckInfo(ZappResultHandler resultHandler) {
 
-        Uri builtUri = Uri.parse(LAppContextStorage.getAppContext().getString(R.string.apiURL)).buildUpon()
-                .appendPath(LAppContextStorage.getAppContext().getString(R.string.export))
+        Uri builtUri = Uri.parse(ZApplication.getAppContext().getString(R.string.apiURL)).buildUpon()
+                .appendPath(ZApplication.getAppContext().getString(R.string.export))
                 .build();
         doRequestTask(builtUri, resultHandler);
-
     }
 
     //endregion

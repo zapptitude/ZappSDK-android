@@ -8,7 +8,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import mev.loggersdk.modules.LAppContextStorage;
+import mev.loggersdk.modules.LApplication;
+import mev.zappsdk.modules.ZApplication;
 import mev.zappsdk.modules.ZappInternal;
 
 /**
@@ -54,7 +55,7 @@ public class ZappInternalTest extends AndroidTestCase {
             e.printStackTrace();
         }
 
-        LAppContextStorage.appContext = getContext();
+        ZApplication.appContext = getContext();
 
         ZappInternal.getInstance().saveBloomFilterToFile(bitSet, hashes);
 

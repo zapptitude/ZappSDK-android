@@ -11,6 +11,7 @@ public class ZappEventLogger {
 
     //region Constants
 
+    //TODO:  move it to string consts
     public static final String Z_EVENT_KEY = "ZEvent";
     public static final String Z_BEGIN_TASK_KEY = "ZBeginTask";
     public static final String Z_SOLVE_TASK_KEY = "ZSolveTask";
@@ -99,7 +100,7 @@ public class ZappEventLogger {
         Logger.getInstance().addLogEvent(Z_SOLVE_TASK_KEY, loggedMap);
     }
 
-    public void logSolveMCTTask(String task, String context, String topics, char expected, char actual, int among, HashMap<String, String> info) {
+    public void logSolveMCTask(String task, String context, String topics, char expected, char actual, int among, HashMap<String, String> info) {
         HashMap<String, String> loggedMap = new HashMap(info);
 
         loggedMap.put(TYPE_KEY, MC_KEY);
