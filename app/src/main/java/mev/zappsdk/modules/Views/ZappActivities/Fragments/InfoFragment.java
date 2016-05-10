@@ -63,7 +63,7 @@ public class InfoFragment extends Fragment {
 
     private void initControls() {
         TextView infoTextView = (TextView) rootView.findViewById(R.id.info_textView);
-        infoTextView.setText(String.format(getContext().getString(R.string.how_text), LInfoHelper.getInstance().getPackageName()));
+        infoTextView.setText(String.format(getContext().getString(R.string.how_text), LInfoHelper.getInstance().getApplicationName()));
     }
 
     private void setListeners() {

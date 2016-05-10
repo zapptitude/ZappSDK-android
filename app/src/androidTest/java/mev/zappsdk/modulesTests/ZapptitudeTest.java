@@ -40,7 +40,7 @@ public class ZapptitudeTest extends AndroidTestCase {
 
     public void testUserProviderZappId() {
         String zappId = Zapptitude.userProviderZappId();
-//        assertEquals(ZAPP_ID_IS_WRONG_EXCEPTION, TEST_ZAPP_ID, zappId);
+        assertEquals(ZAPP_ID_IS_WRONG_EXCEPTION, TEST_ZAPP_ID, zappId);
     }
 
     public void testLogEvent() {

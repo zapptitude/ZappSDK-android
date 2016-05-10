@@ -1,8 +1,13 @@
 package mev.zappsdk.modules;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.pm.PackageManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.view.WindowManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +48,6 @@ public class ZappInternal {
     static final String ZAPP_BLOOM_DATA = "bloom_data";
 
     static final String ZID_KEY = "zid";
-    static final String SESSION_ID_KEY = "session";
     static final String TIME_KEY = "time";
     static final String ZID_SESSION = "session";
     static final String ZID_DURATION = "duration";
@@ -105,7 +109,12 @@ public class ZappInternal {
         sessionStartTime = new Date().getTime();
         sessionId = getRandomId();
         taskStartTime = 0;
+
+        // TODO: move this, activity should not be global
         zappIdActivity = new ZappIdActivity();
+
+//        ZTask zTask = new ZTask();
+//        zTask.execute();
 
         String appIdentifier = LInfoHelper.getInstance().getPackageName();
         String appVersion = LInfoHelper.getInstance().getVersion();
@@ -115,17 +124,16 @@ public class ZappInternal {
         Logger.getInstance().loggerWithAppID(cleanedAppId);
 
 
-        // TODO: check this
-        String zappDirPath = LDataSourceHelper.getInternalStoragePath();
-
-        if (zappDirPath == null || zappDirPath.isEmpty()) {
-
-            Log.d(ZappInternal.class.getSimpleName(), String.format("could not create directory %s", zappDirPath));
-            zappId = new String(sessionId);
-            isUserDefinedZapp = false;
-            return;
-        }
-
+        // TODO: Do not need this
+//        String zappDirPath = LDataSourceHelper.getInternalStoragePath();
+//
+//        if (ActivityCompat.checkSelfPermission(ZApplication.getAppContext(), Manifest.permission.WRITE_INTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//
+//            Log.d(ZappInternal.class.getSimpleName(), String.format("could not create directory %s", zappDirPath));
+//            zappId = new String(sessionId);
+//            isUserDefinedZapp = false;
+//            return;
+//        }
 
         if (!loadFromFile(ZAPP_FILE_NAME)) {
             zappId = getRandomId();
@@ -135,10 +143,35 @@ public class ZappInternal {
 
         allowNotVerifiedZid = false;
 
-        if (LInfoHelper.getInstance().getConnectionInfo() != NetworkInfo.DetailedState.CONNECTED) {
+        if (LInfoHelper.getInstance().getConnectionState() == NetworkInfo.DetailedState.CONNECTED) {
             loadDataForBloomFilter();
         }
     }
+
+//    //region Inner classes
+//
+//    class ZTask extends AsyncTask<Void, Void, Void> {
+//
+//        //region Virtual methods
+//
+//        @Override
+//        protected Void doInBackground(Void... params) {
+//
+//            String appIdentifier = LInfoHelper.getInstance().getPackageName();
+//            String appVersion = LInfoHelper.getInstance().getVersion();
+//            String appId = (appIdentifier == null || appVersion == null) ? UNKNOWN_APP_TEXT : appIdentifier;
+//
+//            String cleanedAppId = appId.replaceAll(REGULAR_EXPRESSION, REPLACEMENT);
+//            Logger.getInstance().loggerWithAppID(cleanedAppId);
+//
+//            return null;
+//        }
+//
+//        //endregion
+//
+//    }
+//
+//    //endregion
 
     //endregion
 
@@ -166,6 +199,9 @@ public class ZappInternal {
 
     public void requestZappId() {
         zappIdActivity.requestZappId(isUserDefinedZapp ? zappId : null);
+        if (LInfoHelper.getInstance().getConnectionState() == NetworkInfo.DetailedState.CONNECTED) {
+            loadDataForBloomFilter();
+        }
         updateOfflineCheckerRules();
     }
 
@@ -186,7 +222,7 @@ public class ZappInternal {
         HashMap<String, String> result = new HashMap();
 
         result.put(ZID_KEY, zappId);
-        result.put(SESSION_ID_KEY, sessionId);
+        result.put(ZID_SESSION, sessionId);
         // TODO: check this
         result.put(TIME_KEY, String.valueOf(new Date().getTime() - sessionStartTime));
 
@@ -229,7 +265,7 @@ public class ZappInternal {
         result.put(ZID_KEY, zappId);
         result.put(ZID_SESSION, sessionId);
         result.put(ZID_DURATION, String.format("%.3f", taskDuration(task, context)));
-        result.put(ZID_TIME, String.valueOf(new Date().getTime() - sessionStartTime));
+        result.put(ZID_TIME, String.valueOf((new Date().getTime() - sessionStartTime) / 1000.0));
         return result;
     }
 
@@ -274,17 +310,15 @@ public class ZappInternal {
     //region Internal Methods
 
     private void updateOfflineCheckerRules() {
-        if (loadBloomFilterDataFromFile(ZAPP_BLOOM_FILE_NAME)) {
-            if (LInfoHelper.getInstance().getConnectionInfo() != NetworkInfo.DetailedState.CONNECTED) {
-                AlertDialog alertDialog = new AlertDialog.Builder(ZApplication.getAppContext().getApplicationContext()).setTitle("Zid check error").setMessage("Application is offline and we cannot verify zid. Are you sure you want to continue?").setNeutralButton("Cancel", null).show();
-                alertDialog.show();
-            }
+        if (loadBloomFilterDataFromFile() && LInfoHelper.getInstance().getConnectionState() != NetworkInfo.DetailedState.CONNECTED) {
+            AlertDialog alertDialog = new AlertDialog.Builder(ZApplication.getAppContext().getApplicationContext()).setTitle("Zid check error").setMessage("Application is offline and we cannot verify zid. Are you sure you want to continue?").setNeutralButton("Cancel", null).show();
+            alertDialog.show();
         }
     }
 
-    private boolean loadBloomFilterDataFromFile(String path) {
+    private boolean loadBloomFilterDataFromFile() {
 
-        File file = LDataSourceHelper.getFile(path);
+        File file = LDataSourceHelper.getFile(ZAPP_BLOOM_FILE_NAME);
 
         if (file == null || !file.exists() || file.length() == 0) {
             Log.d(ZappInternal.class.getSimpleName(), String.format(ERROR_LOAD_FROM_BLOOM_FILE_FAILED_TEXT, file.getName()));
@@ -313,7 +347,7 @@ public class ZappInternal {
 
         configureBloomFilter(zappBloom);
 
-        Log.d(ZappInternal.class.getSimpleName(), String.format(LOAD_BLOOM_FROM_FILE_SUCCESSFUL_TEXT, zappId, path));
+        Log.d(ZappInternal.class.getSimpleName(), String.format(LOAD_BLOOM_FROM_FILE_SUCCESSFUL_TEXT, zappId, ZAPP_BLOOM_FILE_NAME));
 
         return true;
     }
@@ -423,6 +457,8 @@ public class ZappInternal {
     //endregion
 
     public boolean checkOfflineZID(String zappId) {
+        if (bloomFilter == null)
+            return false;
         return bloomFilter.contains(zappId.toLowerCase()) || allowNotVerifiedZid;
     }
 

@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -71,7 +73,10 @@ public class ZappIdFragment extends Fragment {
 
     private void initControls() {
         zapIdEditText = (EditText) rootView.findViewById(R.id.zapIdEditText);
-        zapIdEditText.setText(((ZappIdActivity) getActivity()).zappId);
+        String zappId = ((ZappIdActivity) getActivity()).zappId;
+        if (zappId != null && !zappId.isEmpty())
+            zapIdEditText.setText(zappId);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
     }
 
@@ -83,10 +88,13 @@ public class ZappIdFragment extends Fragment {
 
     private void showProgressBar() {
         progressBar.setVisibility(View.VISIBLE);
+        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     private void hideProgressBar() {
         progressBar.setVisibility(View.INVISIBLE);
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     // TODO: fix progress bar
@@ -97,7 +105,7 @@ public class ZappIdFragment extends Fragment {
             getActivity().onBackPressed();
             hideProgressBar();
         } else if (!zappId.isEmpty()) {
-            if (LInfoHelper.getInstance().getConnectionInfo() == NetworkInfo.DetailedState.CONNECTED) {
+            if (LInfoHelper.getInstance().getConnectionState() == NetworkInfo.DetailedState.CONNECTED) {
 
                 ZappResultHandler.SuccessHandler successHandler = new ZappResultHandler.SuccessHandler() {
 
@@ -171,6 +179,12 @@ public class ZappIdFragment extends Fragment {
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if (motionEvent.getAction() != MotionEvent.ACTION_DOWN)
                 return false;
+
+            if (zapIdEditText.getText().toString().isEmpty()) {
+                ZappAlertDialog zappAlertDialog = new ZappAlertDialog();
+                zappAlertDialog.showDialog(getActivity(), "Not valid id", String.format("ZappId field is empty! Please enter ZappId"));
+                return false;
+            }
 
             handleZappId(zapIdEditText.getText().toString());
             return true;

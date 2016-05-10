@@ -5,10 +5,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
+import mev.loggersdk.modules.Helper.LInfoHelper;
+import mev.loggersdk.modules.Logger;
 import mev.zappsdk.R;
 import mev.zappsdk.modules.Views.ZappActivities.Fragments.ZappIdFragment;
 import mev.zappsdk.modules.ZApplication;
@@ -42,35 +46,41 @@ public class ZappIdActivity extends AppCompatActivity {
                     .commit();
 
         }
-
-        // TODO: move this
-        if (ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                new AlertDialog.Builder(getBaseContext())
-                        .setTitle("Location permission")
-                        .setMessage("Please allow acc")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // continue with delete
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-            } else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        0);
-            }
-        }
-
-
-
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("PLAYGROUND", "Permission is not granted, requesting");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+        } else {
+            Log.d("PLAYGROUND", "Permission is granted");
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("PLAYGROUND", "Permission is not granted, requesting");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 0);
+        } else {
+            Log.d("PLAYGROUND", "Permission is granted");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        switch(requestCode){
+            case 0:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("PLAYGROUND", "Permission has been granted");
+                } else {
+                    Log.d("PLAYGROUND", "Permission has been denied or request cancelled");
+                }
+            break;
+            default:
+            break;
+        }
+    }
+
 
     //endregion
 

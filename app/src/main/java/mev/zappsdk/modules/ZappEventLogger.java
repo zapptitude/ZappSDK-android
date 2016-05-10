@@ -25,7 +25,7 @@ public class ZappEventLogger {
     public static final String ACTUAL_KEY = "actual";
     public static final String AMONG_KEY = "among";
     public static final String BINARY_KEY = "binary";
-    public static final String INT_KEY = "binary";
+    public static final String INT_KEY = "int";
     public static final String FLOAT_KEY = "float";
     public static final String MC_KEY = "mc";
     public static final String GRAD_KEY = "grad";
@@ -52,82 +52,76 @@ public class ZappEventLogger {
     }
 
     public void logBeginTask(String task, String context, HashMap<String, String> info) {
-        HashMap<String, String> loggedMap = new HashMap(info);
 
-        loggedMap.put(TASK_KEY, checkEmptyString(task));
-        loggedMap.put(CONTEXT_KEY, checkEmptyString(context));
+        info.put(TASK_KEY, checkEmptyString(task));
+        info.put(CONTEXT_KEY, checkEmptyString(context));
 
-        Logger.getInstance().addLogEvent(Z_BEGIN_TASK_KEY, loggedMap);
+        Logger.getInstance().addLogEvent(Z_BEGIN_TASK_KEY, info);
     }
 
     public void logSolveBinaryTask(String task, String context, String topics, boolean expected, boolean actual, HashMap<String, String> info) {
-        HashMap<String, String> loggedMap = new HashMap(info);
 
-        loggedMap.put(TYPE_KEY, BINARY_KEY);
-        loggedMap.put(EXPECTED_KEY, String.valueOf(expected));
-        loggedMap.put(ACTUAL_KEY, String.valueOf(actual));
-        loggedMap.put(TASK_KEY, checkEmptyString(task));
-        loggedMap.put(CONTEXT_KEY, checkEmptyString(context));
-        loggedMap.put(TOPICS_KEY, checkEmptyString(topics));
+        info.put(TYPE_KEY, BINARY_KEY);
+        info.put(EXPECTED_KEY, String.valueOf(expected));
+        info.put(ACTUAL_KEY, String.valueOf(actual));
+        info.put(TASK_KEY, checkEmptyString(task));
+        info.put(CONTEXT_KEY, checkEmptyString(context));
+        info.put(TOPICS_KEY, checkEmptyString(topics));
 
-        Logger.getInstance().addLogEvent(Z_SOLVE_TASK_KEY, loggedMap);
+        Logger.getInstance().addLogEvent(Z_SOLVE_TASK_KEY, info);
     }
 
     public void logSolveIntTask(String task, String context, String topics, int expected, int actual, HashMap<String, String> info) {
-        HashMap<String, String> loggedMap = new HashMap(info);
 
-        loggedMap.put(TYPE_KEY, INT_KEY);
-        loggedMap.put(EXPECTED_KEY, String.valueOf(expected));
-        loggedMap.put(ACTUAL_KEY, String.valueOf(actual));
-        loggedMap.put(TASK_KEY, checkEmptyString(task));
-        loggedMap.put(CONTEXT_KEY, checkEmptyString(context));
-        loggedMap.put(TOPICS_KEY, checkEmptyString(topics));
+        info.put(TYPE_KEY, INT_KEY);
+        info.put(EXPECTED_KEY, String.valueOf(expected));
+        info.put(ACTUAL_KEY, String.valueOf(actual));
+        info.put(TASK_KEY, checkEmptyString(task));
+        info.put(CONTEXT_KEY, checkEmptyString(context));
+        info.put(TOPICS_KEY, checkEmptyString(topics));
 
-        Logger.getInstance().addLogEvent(Z_SOLVE_TASK_KEY, loggedMap);
+        Logger.getInstance().addLogEvent(Z_SOLVE_TASK_KEY, info);
     }
 
     public void logSolveFloatTask(String task, String context, String topics, float expected, float actual, HashMap<String, String> info) {
-        HashMap<String, String> loggedMap = new HashMap(info);
 
-        loggedMap.put(TYPE_KEY, FLOAT_KEY);
+        info.put(TYPE_KEY, FLOAT_KEY);
         // TODO: check this
-        loggedMap.put(EXPECTED_KEY, String.format("%.4f",expected));
-        loggedMap.put(ACTUAL_KEY, String.format("%.4f", actual));
-        loggedMap.put(TASK_KEY, checkEmptyString(task));
-        loggedMap.put(CONTEXT_KEY, checkEmptyString(context));
-        loggedMap.put(TOPICS_KEY, checkEmptyString(topics));
+        info.put(EXPECTED_KEY, String.format("%.4f",expected));
+        info.put(ACTUAL_KEY, String.format("%.4f", actual));
+        info.put(TASK_KEY, checkEmptyString(task));
+        info.put(CONTEXT_KEY, checkEmptyString(context));
+        info.put(TOPICS_KEY, checkEmptyString(topics));
 
-        Logger.getInstance().addLogEvent(Z_SOLVE_TASK_KEY, loggedMap);
+        Logger.getInstance().addLogEvent(Z_SOLVE_TASK_KEY, info);
     }
 
     public void logSolveMCTask(String task, String context, String topics, char expected, char actual, int among, HashMap<String, String> info) {
-        HashMap<String, String> loggedMap = new HashMap(info);
 
-        loggedMap.put(TYPE_KEY, MC_KEY);
-        loggedMap.put(EXPECTED_KEY, String.valueOf(expected));
-        loggedMap.put(ACTUAL_KEY, String.valueOf(actual));
-        loggedMap.put(AMONG_KEY, String.valueOf(among));
+        info.put(TYPE_KEY, MC_KEY);
+        info.put(EXPECTED_KEY, String.valueOf(expected));
+        info.put(ACTUAL_KEY, String.valueOf(actual));
+        info.put(AMONG_KEY, String.valueOf(among));
 
-        loggedMap.put(TASK_KEY, checkEmptyString(task));
-        loggedMap.put(CONTEXT_KEY, checkEmptyString(context));
-        loggedMap.put(TOPICS_KEY, checkEmptyString(topics));
+        info.put(TASK_KEY, checkEmptyString(task));
+        info.put(CONTEXT_KEY, checkEmptyString(context));
+        info.put(TOPICS_KEY, checkEmptyString(topics));
 
-        Logger.getInstance().addLogEvent(Z_SOLVE_TASK_KEY, loggedMap);
+        Logger.getInstance().addLogEvent(Z_SOLVE_TASK_KEY, info);
     }
 
     public void logSolveGradTask(String task, String context, String topics, int expected, int actual, int among, HashMap<String, String> info) {
-        HashMap<String, String> loggedMap = new HashMap(info);
 
-        loggedMap.put(TYPE_KEY, GRAD_KEY);
-        loggedMap.put(EXPECTED_KEY, String.valueOf(expected));
-        loggedMap.put(ACTUAL_KEY, String.valueOf(actual));
-        loggedMap.put(AMONG_KEY, String.valueOf(among));
+        info.put(TYPE_KEY, GRAD_KEY);
+        info.put(EXPECTED_KEY, String.valueOf(expected));
+        info.put(ACTUAL_KEY, String.valueOf(actual));
+        info.put(AMONG_KEY, String.valueOf(among));
 
-        loggedMap.put(TASK_KEY, checkEmptyString(task));
-        loggedMap.put(CONTEXT_KEY, checkEmptyString(context));
-        loggedMap.put(TOPICS_KEY, checkEmptyString(topics));
+        info.put(TASK_KEY, checkEmptyString(task));
+        info.put(CONTEXT_KEY, checkEmptyString(context));
+        info.put(TOPICS_KEY, checkEmptyString(topics));
 
-        Logger.getInstance().addLogEvent(Z_SOLVE_TASK_KEY, loggedMap);
+        Logger.getInstance().addLogEvent(Z_SOLVE_TASK_KEY, info);
     }
 
     public String checkEmptyString(String string)

@@ -5,17 +5,18 @@
     android:background="@color/white_overlay"
     tools:context=".modules.Views.ZappActivities.Fragments.ZappIdFragment">
 
+
+
     <!--  Main layout  -->
     <LinearLayout
         android:id="@+id/main_layout"
         android:layout_width="340dp"
         android:layout_height="260dp"
         android:layout_gravity="center"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:orientation="vertical"
         android:background="@drawable/main_box"
-        tools:ignore="UselessParent">
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
 
         <!--  Title layout  -->
         <LinearLayout

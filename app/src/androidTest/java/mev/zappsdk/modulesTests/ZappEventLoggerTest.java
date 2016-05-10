@@ -40,7 +40,7 @@ public class ZappEventLoggerTest extends AndroidTestCase {
     public static final String ACTUAL_KEY = "actual";
     public static final String AMONG_KEY = "among";
     public static final String BINARY_KEY = "binary";
-    public static final String INT_KEY = "binary";
+    public static final String INT_KEY = "int";
     public static final String FLOAT_KEY = "float";
     public static final String MC_KEY = "mc";
     public static final String GRAD_KEY = "grad";
