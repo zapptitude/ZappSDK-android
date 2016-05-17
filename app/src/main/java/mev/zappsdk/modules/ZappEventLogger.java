@@ -75,11 +75,6 @@ public class ZappEventLogger {
 
     public void logSolveIntTask(String task, String context, String topics, int expected, int actual, HashMap<String, String> info) {
 
-        if (expected > Integer.MAX_VALUE || actual > Integer.MAX_VALUE) {
-            Log.d(ZappEventLogger.class.getSimpleName(), String.format("Integer value can't be more than %s", Integer.MAX_VALUE));
-            return;
-        }
-
         info.put(TYPE_KEY, INT_KEY);
         info.put(EXPECTED_KEY, String.valueOf(expected));
         info.put(ACTUAL_KEY, String.valueOf(actual));
@@ -106,11 +101,6 @@ public class ZappEventLogger {
 
     public void logSolveMCTask(String task, String context, String topics, char expected, char actual, int among, HashMap<String, String> info) {
 
-        if (among > Integer.MAX_VALUE) {
-            Log.d(ZappEventLogger.class.getSimpleName(), String.format("Integer value can't be more than %s", Integer.MAX_VALUE));
-            return;
-        }
-
         info.put(TYPE_KEY, MC_KEY);
         info.put(EXPECTED_KEY, String.valueOf(expected));
         info.put(ACTUAL_KEY, String.valueOf(actual));
@@ -125,11 +115,6 @@ public class ZappEventLogger {
     }
 
     public void logSolveGradTask(String task, String context, String topics, int expected, int actual, int among, HashMap<String, String> info) {
-
-        if (expected > Integer.MAX_VALUE || actual > Integer.MAX_VALUE || among > Integer.MAX_VALUE) {
-            Log.d(ZappEventLogger.class.getSimpleName(), String.format("Integer value can't be more than %s", Integer.MAX_VALUE));
-            return;
-        }
 
         info.put(TYPE_KEY, GRAD_KEY);
         info.put(EXPECTED_KEY, String.valueOf(expected));
