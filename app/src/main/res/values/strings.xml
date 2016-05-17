@@ -51,5 +51,9 @@
         you by an in-App alert the first time you use the App after we make the change.\n\nQuestions or comments about Zapptitude’s private policy or practices should be submitted
         to\nsupport@zapptitude.com</string>
     <string name="apiURL">https://zapptitude-dev.herokuapp.com/api/</string>
-    <string name="zidAcceptableCharacters">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_.</string>
+    <string name="permissionOK">Permission is granted</string>
+    <string name="permissionAsking">Permission is not granted, requesting</string>
+    <string name="permissionGranted">Permission has been granted</string>
+    <string name="permissionDenied">Permission has been denied or request cancelled</string>
+    <string name="zappId">zappId</string>
 </resources>

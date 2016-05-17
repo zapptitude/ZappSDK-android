@@ -38,7 +38,7 @@ public class ZappIdActivity extends AppCompatActivity {
 
             Intent intent = getIntent();
             if (intent != null) {
-                zappId = intent.getStringExtra("zappId");
+                zappId = intent.getStringExtra(getString(R.string.zappId));
             }
 
             getSupportFragmentManager().beginTransaction()
@@ -52,16 +52,16 @@ public class ZappIdActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.d("PLAYGROUND", "Permission is not granted, requesting");
+            Log.d(ZappIdActivity.class.getSimpleName(), getString(R.string.permissionAsking));
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         } else {
-            Log.d("PLAYGROUND", "Permission is granted");
+            Log.d(ZappIdActivity.class.getSimpleName(), getString(R.string.permissionOK));
         }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            Log.d("PLAYGROUND", "Permission is not granted, requesting");
+            Log.d(ZappIdActivity.class.getSimpleName(), getString(R.string.permissionAsking));
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 0);
         } else {
-            Log.d("PLAYGROUND", "Permission is granted");
+            Log.d(ZappIdActivity.class.getSimpleName(), getString(R.string.permissionOK));
         }
     }
 
@@ -71,9 +71,9 @@ public class ZappIdActivity extends AppCompatActivity {
         switch(requestCode){
             case 0:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d("PLAYGROUND", "Permission has been granted");
+                    Log.d(ZappIdActivity.class.getSimpleName(), getString(R.string.permissionGranted));
                 } else {
-                    Log.d("PLAYGROUND", "Permission has been denied or request cancelled");
+                    Log.d(ZappIdActivity.class.getSimpleName(), getString(R.string.permissionDenied));
                 }
             break;
             default:
@@ -89,7 +89,7 @@ public class ZappIdActivity extends AppCompatActivity {
     public static void requestZappId(String zappId) {
         Intent intent = new Intent(ZApplication.getAppContext(), ZappIdActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("zappId", zappId);
+        intent.putExtra(ZApplication.getAppContext().getString(R.string.zappId), zappId);
         ZApplication.getAppContext().startActivity(intent);
     }
 

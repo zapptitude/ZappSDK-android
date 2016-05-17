@@ -113,9 +113,6 @@ public class ZappInternal {
         // TODO: move this, activity should not be global
         zappIdActivity = new ZappIdActivity();
 
-//        ZTask zTask = new ZTask();
-//        zTask.execute();
-
         String appIdentifier = LInfoHelper.getInstance().getPackageName();
         String appVersion = LInfoHelper.getInstance().getVersion();
         String appId = (appIdentifier == null || appVersion == null) ? UNKNOWN_APP_TEXT : appIdentifier;
@@ -124,18 +121,7 @@ public class ZappInternal {
         Logger.getInstance().loggerWithAppID(cleanedAppId);
 
 
-        // TODO: Do not need this
-//        String zappDirPath = LDataSourceHelper.getInternalStoragePath();
-//
-//        if (ActivityCompat.checkSelfPermission(ZApplication.getAppContext(), Manifest.permission.WRITE_INTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//
-//            Log.d(ZappInternal.class.getSimpleName(), String.format("could not create directory %s", zappDirPath));
-//            zappId = new String(sessionId);
-//            isUserDefinedZapp = false;
-//            return;
-//        }
-
-        if (!loadFromFile(ZAPP_FILE_NAME)) {
+       if (!loadFromFile(ZAPP_FILE_NAME)) {
             zappId = getRandomId();
             isUserDefinedZapp = false;
             saveToFile(ZAPP_FILE_NAME);
@@ -148,37 +134,12 @@ public class ZappInternal {
         }
     }
 
-//    //region Inner classes
-//
-//    class ZTask extends AsyncTask<Void, Void, Void> {
-//
-//        //region Virtual methods
-//
-//        @Override
-//        protected Void doInBackground(Void... params) {
-//
-//            String appIdentifier = LInfoHelper.getInstance().getPackageName();
-//            String appVersion = LInfoHelper.getInstance().getVersion();
-//            String appId = (appIdentifier == null || appVersion == null) ? UNKNOWN_APP_TEXT : appIdentifier;
-//
-//            String cleanedAppId = appId.replaceAll(REGULAR_EXPRESSION, REPLACEMENT);
-//            Logger.getInstance().loggerWithAppID(cleanedAppId);
-//
-//            return null;
-//        }
-//
-//        //endregion
-//
-//    }
-//
-//    //endregion
-
     //endregion
 
     //region ZappId methods
 
     public void setZappId(String zappId) {
-        if (this.zappId == null || this.zappId.isEmpty()) {
+        if (zappId == null || zappId.isEmpty()) {
 
             if (!isUserDefinedZapp) {
                 return;
@@ -223,7 +184,6 @@ public class ZappInternal {
 
         result.put(ZID_KEY, zappId);
         result.put(ZID_SESSION, sessionId);
-        // TODO: check this
         result.put(TIME_KEY, String.valueOf(new Date().getTime() - sessionStartTime));
 
         return result;

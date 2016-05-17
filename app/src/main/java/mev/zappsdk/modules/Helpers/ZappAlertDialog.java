@@ -18,7 +18,7 @@ public class ZappAlertDialog {
         builder.setMessage(message)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // FIRE ZE MISSILES!
+
                     }
                 })
                 .setTitle(title);

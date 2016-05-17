@@ -40,27 +40,22 @@ public class Zapptitude {
 
     public static void logSolveBinaryTask(String task, String context, String topics, boolean expected, boolean actual) {
         ZappEventLogger.getInstance().logSolveBinaryTask(task, context, topics, expected, actual, ZappInternal.getInstance().sessionInfoForTask(task, context));
-        ZappInternal.getInstance().resetTaskStartTime();
     }
 
     public static void logSolveIntTask(String task, String context, String topics, int expected, int actual) {
         ZappEventLogger.getInstance().logSolveIntTask(task, context, topics, expected, actual, ZappInternal.getInstance().sessionInfoForTask(task, context));
-        ZappInternal.getInstance().resetTaskStartTime();
     }
 
     public static void logSolveFloatTask(String task, String context, String topics, float expected, float actual) {
         ZappEventLogger.getInstance().logSolveFloatTask(task, context, topics, expected, actual, ZappInternal.getInstance().sessionInfoForTask(task, context));
-        ZappInternal.getInstance().resetTaskStartTime();
     }
 
     public static void logSolveMCTask(String task, String context, String topics, char expected, char actual, int among) {
         ZappEventLogger.getInstance().logSolveMCTask(task, context, topics, expected, actual, among, ZappInternal.getInstance().sessionInfoForTask(task, context));
-        ZappInternal.getInstance().resetTaskStartTime();
     }
 
     public static void logSolveGradTask(String task, String context, String topics, int expected, int actual, int among) {
         ZappEventLogger.getInstance().logSolveGradTask(task, context, topics, expected, actual, among, ZappInternal.getInstance().sessionInfoForTask(task, context));
-        ZappInternal.getInstance().resetTaskStartTime();
     }
 
     //endregion

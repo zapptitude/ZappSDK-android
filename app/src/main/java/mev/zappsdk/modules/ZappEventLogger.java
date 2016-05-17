@@ -1,5 +1,7 @@
 package mev.zappsdk.modules;
 
+import android.util.Log;
+
 import java.util.HashMap;
 
 import mev.loggersdk.modules.Logger;
@@ -11,7 +13,6 @@ public class ZappEventLogger {
 
     //region Constants
 
-    //TODO:  move it to string consts
     public static final String Z_EVENT_KEY = "ZEvent";
     public static final String Z_BEGIN_TASK_KEY = "ZBeginTask";
     public static final String Z_SOLVE_TASK_KEY = "ZSolveTask";
@@ -69,9 +70,15 @@ public class ZappEventLogger {
         info.put(TOPICS_KEY, checkEmptyString(topics));
 
         Logger.getInstance().addLogEvent(Z_SOLVE_TASK_KEY, info);
+        ZappInternal.getInstance().resetTaskStartTime();
     }
 
     public void logSolveIntTask(String task, String context, String topics, int expected, int actual, HashMap<String, String> info) {
+
+        if (expected > Integer.MAX_VALUE || actual > Integer.MAX_VALUE) {
+            Log.d(ZappEventLogger.class.getSimpleName(), String.format("Integer value can't be more than %s", Integer.MAX_VALUE));
+            return;
+        }
 
         info.put(TYPE_KEY, INT_KEY);
         info.put(EXPECTED_KEY, String.valueOf(expected));
@@ -81,22 +88,28 @@ public class ZappEventLogger {
         info.put(TOPICS_KEY, checkEmptyString(topics));
 
         Logger.getInstance().addLogEvent(Z_SOLVE_TASK_KEY, info);
+        ZappInternal.getInstance().resetTaskStartTime();
     }
 
     public void logSolveFloatTask(String task, String context, String topics, float expected, float actual, HashMap<String, String> info) {
 
         info.put(TYPE_KEY, FLOAT_KEY);
-        // TODO: check this
-        info.put(EXPECTED_KEY, String.format("%.4f",expected));
+        info.put(EXPECTED_KEY, String.format("%.4f", expected));
         info.put(ACTUAL_KEY, String.format("%.4f", actual));
         info.put(TASK_KEY, checkEmptyString(task));
         info.put(CONTEXT_KEY, checkEmptyString(context));
         info.put(TOPICS_KEY, checkEmptyString(topics));
 
         Logger.getInstance().addLogEvent(Z_SOLVE_TASK_KEY, info);
+        ZappInternal.getInstance().resetTaskStartTime();
     }
 
     public void logSolveMCTask(String task, String context, String topics, char expected, char actual, int among, HashMap<String, String> info) {
+
+        if (among > Integer.MAX_VALUE) {
+            Log.d(ZappEventLogger.class.getSimpleName(), String.format("Integer value can't be more than %s", Integer.MAX_VALUE));
+            return;
+        }
 
         info.put(TYPE_KEY, MC_KEY);
         info.put(EXPECTED_KEY, String.valueOf(expected));
@@ -108,9 +121,15 @@ public class ZappEventLogger {
         info.put(TOPICS_KEY, checkEmptyString(topics));
 
         Logger.getInstance().addLogEvent(Z_SOLVE_TASK_KEY, info);
+        ZappInternal.getInstance().resetTaskStartTime();
     }
 
     public void logSolveGradTask(String task, String context, String topics, int expected, int actual, int among, HashMap<String, String> info) {
+
+        if (expected > Integer.MAX_VALUE || actual > Integer.MAX_VALUE || among > Integer.MAX_VALUE) {
+            Log.d(ZappEventLogger.class.getSimpleName(), String.format("Integer value can't be more than %s", Integer.MAX_VALUE));
+            return;
+        }
 
         info.put(TYPE_KEY, GRAD_KEY);
         info.put(EXPECTED_KEY, String.valueOf(expected));
@@ -122,6 +141,7 @@ public class ZappEventLogger {
         info.put(TOPICS_KEY, checkEmptyString(topics));
 
         Logger.getInstance().addLogEvent(Z_SOLVE_TASK_KEY, info);
+        ZappInternal.getInstance().resetTaskStartTime();
     }
 
     public String checkEmptyString(String string)
