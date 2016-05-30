@@ -2,6 +2,8 @@ package mev.zappsdk.modules;
 
 import java.util.HashMap;
 
+import mev.loggersdk.modules.Logger;
+
 /**
  * Created by andrew on 24.03.16.
  */
@@ -56,6 +58,14 @@ public class Zapptitude {
 
     public static void logSolveGradTask(String task, String context, String topics, int expected, int actual, int among) {
         ZappEventLogger.getInstance().logSolveGradTask(task, context, topics, expected, actual, among, ZappInternal.getInstance().sessionInfoForTask(task, context));
+    }
+
+    public static void onResume() {
+        Logger.getInstance().onResume();
+    }
+
+    public static void onStop() {
+        Logger.getInstance().onStop();
     }
 
     //endregion
