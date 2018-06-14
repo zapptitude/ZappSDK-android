@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="tasks_array">
+        <item>Log event</item>
+        <item>Log task in context</item>
+        <item>Solve binary task</item>
+        <item>Solve int task</item>
+        <item>Solve float task</item>
+        <item>Solve grad task</item>
+        <item>Solve MC task</item>
+    </string-array>
+</resources>

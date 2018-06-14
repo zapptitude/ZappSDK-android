@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">ZappSDK</string>
+    <string name="title_activity_zapp_id">ZappIdActivity</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
+
+    <string name="what_is_zid">What is a Zid?</string>
+    <string name="anonymous">anonymous</string>
+    <string name="how_text">This %s app uses Zapptitude to save some activity crumbs while you are interacting with the app.
+        This information can be used by the app developer to better understand how users interact with the app, and improve user experience with the app.\n\n
+        The same information can be compiled into valuable reports for you, the user, assuming you can be linked to your activity crumbs.
+        This is the purpose of the Zapptitude ID, or Zid. It can be any alias name of your choosing. It does not need to contain a real name.
+        It is case sensitive (lower and upper case matters) and should be complex enough to reduce the chances that another user picks the same Zid.\n\n
+        As an added security measure, only an encrypted form of your Zid is ever stored along with your activity crumbs.
+        So, even if you provide personally identifiable data in your Zid, the activity crumbs can never be linked back to you.\n\n
+        If you don’t wish to get a personalized user report of your activity you can select an empty Zid or click to remain anonymous.
+        Note that your activity crumbs are still saved for the purpose of helping the app developer.\n\n
+        Finally, by clicking, you agree to the above mentioned data collection.</string>
+    <string name="about_text">What is Zapptitude?\n\n
+        Zapptitude is a platform to build tools for assessing users’ cognitive skills while they play educational apps and games on their mobile devices.\n\n
+        What is a Zapptitude ID or Zid?\n\nAn app using Zapptitude saves some activity crumbs while the user interacts with the app.\n
+        This information is then provided to the app developer to better understand how users interact with the app, and this can lead to improvement of the app
+        aimed at a smoother user experience.\nThis information can also be compiled into valuable reports for the user, assuming that there is a way to link the
+        user to her logged activity crumbs. This is the purpose of the Zid. It can be any alias name chosen by the user. It does not need to contain a real name.
+        It is case sensitive and should be complex enough to reduce the chances that another user picks the same Zid.\n\nAt Zapptitude, the privacy of users is paramount.
+        As an added security measure, only an encrypted form of the Zid is ever stored with the activity crumbs. So, even if a user provides personally identifiable data in the Zid,
+        the activity crumbs can never, in any case, be linked back to the user.\n\nIf the user wishes not to link her activity crumbs to any Zid, she can proceed as anonymous.
+        The activity crumbs of an anonymous user are still saved for the purpose of helping the app developer.
+        But there will be no way to get a user report from these anonymous activity crumbs.\n\nZapptitude’s Privacy Policy:\nUpdated April 10, 2015\n\n
+        What information is collected from Children?\n\nComplying with COPPA, we do NOT collect any personally identifiable information from children such as name, postal address, email address,
+        telephone, etc. We only collect as much information as is reasonably necessary for the child to participate in an activity within the App.
+        Even the anonymous ID they create is stored in it’s encrypted form and it’s totally voluntary.\n\nAutomatic information collection: When you download,
+        access and use any App that is Zappified (Apps instrumented with Zapptitude), it may use technology to automatically collect certain details.
+        When you access and use a Zappified App (the App), we may automatically collect certain details of your access to and use of the App including traffic data,
+        logs and other communication data and the resources that you access and use on or through the App. The technologies we use for automatic information collection
+        may include mobile cookies.\n\nThird-party collection information: When you use the App or it’s content, certain third parties may use automatic information
+        collection technologies to collect usage information. These third parties may include: 1) Analytics companies, 2) your mobile device manufacturer,
+        3) your mobile service provider, 4) App store provider.\n\nThe usage information we collect helps us to improve the App and to deliver a better and more
+        personalized experience by enabling us to 1) Estimate the audience size and usage pattern. 2) Store information about your preferences, allowing us to customize
+        the App according to your individual interests. 3) Recognize you when you use the App.\n\nWe do not share, sell, rent or transfer any individual information other
+        than as described next. We may disclose aggregated information about our users, and information that does not identify any individual or device, without restriction.
+        In addition, we may disclose non personal information to third parties we use to support the internal operations of the App and who are bound by contractual or other
+        obligations to use the information only for such purpose and to keep the information confidential. We might also disclose information if we are required to do so by law
+        or legal process to comply with any court order or government regulatory request. Information will be disclosed if we believe it is necessary or appropriate to protect
+        the rights, property or safety of Zapptitude Inc, our customers or others including to protect the safety of a child or protect the safety and security of the App, or enable
+        us to take precautions against liability and to law enforcement agencies for an investigation related to public safety.\n\nWe may update our privacy policy from time to time.
+        If we make material changes to how we treat our users’ personal information, we will post the new privacy policy on this page with a notice that it has been updated and notify
+        you by an in-App alert the first time you use the App after we make the change.\n\nQuestions or comments about Zapptitude’s private policy or practices should be submitted
+        to\nsupport@zapptitude.com</string>
+    <string name="permissionOK">Permission is granted</string>
+    <string name="permissionAsking">Permission is not granted, requesting</string>
+    <string name="permissionGranted">Permission has been granted</string>
+    <string name="permissionDenied">Permission has been denied or request cancelled</string>
+    <string name="zappId">zappId</string>
+</resources>

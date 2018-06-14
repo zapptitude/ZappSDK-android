@@ -1,0 +1,56 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.ZappActivity.Fragments.SolveIntTaskFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/task_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:singleLine="true"
+            android:hint="Task"/>
+
+        <EditText
+            android:id="@+id/context_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:singleLine="true"
+            android:hint="Context"/>
+
+        <EditText
+            android:id="@+id/topics_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:singleLine="true"
+            android:hint="Topics"/>
+
+        <EditText
+            android:id="@+id/expected_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number|numberSigned"
+            android:imeOptions="actionNext"
+            android:singleLine="true"
+            android:hint="Expected answer"/>
+
+        <EditText
+            android:id="@+id/actual_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number|numberSigned"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:hint="Actual answer"/>
+
+    </LinearLayout>
+
+</FrameLayout>
