@@ -73,6 +73,7 @@ obj/
 
 # IntelliJ IDEA
 sdk/*.iml
+sdk/app/*.iml
 sdk/*.iws
 sdk/out/
 
@@ -85,6 +86,7 @@ sampleapp/app/out/
 # User-specific configurations
 sampleapp/.idea/
 sdk/.idea/
+sdk/app/.idea/
 
 .idea/modules.xml
 .idea/scopes/scope_settings.xml
