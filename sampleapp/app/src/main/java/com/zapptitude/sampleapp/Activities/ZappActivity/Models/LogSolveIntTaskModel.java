@@ -1,4 +1,4 @@
-package mev.zapptitudeapp.Activities.ZappActivity.Models;
+package com.zapptitude.sampleapp.Activities.ZappActivity.Models;
 
 /**
  * Created by andrew on 11.04.16.

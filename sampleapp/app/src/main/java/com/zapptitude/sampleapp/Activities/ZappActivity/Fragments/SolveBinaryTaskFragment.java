@@ -1,4 +1,4 @@
-package mev.zapptitudeapp.Activities.ZappActivity.Fragments;
+package com.zapptitude.sampleapp.Activities.ZappActivity.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,14 +7,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Switch;
+
+import com.zapptitude.sampleapp.Activities.ZappActivity.Interfaces.ILoggable;
+import com.zapptitude.sampleapp.Activities.ZappActivity.Models.LogSolveBinaryTaskModel;
 
 import mev.zappsdk.modules.Zapptitude;
-import mev.zapptitudeapp.Activities.ZappActivity.Interfaces.ILoggable;
-import mev.zapptitudeapp.Activities.ZappActivity.Models.LogSolveFloatTaskModel;
 import mev.zapptitudeapp.R;
 
 
-public class SolveFloatTaskFragment extends Fragment implements ILoggable {
+public class SolveBinaryTaskFragment extends Fragment implements ILoggable {
 
     //region Views
 
@@ -24,7 +26,7 @@ public class SolveFloatTaskFragment extends Fragment implements ILoggable {
 
     //region Constructors
 
-    public SolveFloatTaskFragment() {}
+    public SolveBinaryTaskFragment() {}
 
     //endregion
 
@@ -38,7 +40,7 @@ public class SolveFloatTaskFragment extends Fragment implements ILoggable {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_solve_float_task, container, false);
+        rootView = inflater.inflate(R.layout.fragment_solve_binary_task, container, false);
 
         return rootView;
     }
@@ -62,17 +64,18 @@ public class SolveFloatTaskFragment extends Fragment implements ILoggable {
         String task = ((EditText) rootView.findViewById(R.id.task_editText)).getText().toString();
         String context = ((EditText) rootView.findViewById(R.id.context_editText)).getText().toString();
         String topics = ((EditText) rootView.findViewById(R.id.topics_editText)).getText().toString();
-        String expected = ((EditText) rootView.findViewById(R.id.expected_editText)).getText().toString();
-        String actual = ((EditText) rootView.findViewById(R.id.actual_editText)).getText().toString();
 
         if (task.isEmpty() || context.isEmpty()
-                || topics.isEmpty() || expected.isEmpty()
-                || actual.isEmpty())
+                || topics.isEmpty())
             return "";
 
-        Zapptitude.logSolveFloatTask(task, context,
-                topics, Float.parseFloat(expected), Float.parseFloat(actual));
-        return new LogSolveFloatTaskModel(task, context, topics, Float.parseFloat(expected), Float.parseFloat(actual)).toString();
+        boolean expected = ((Switch) rootView.findViewById(R.id.expected_switch)).getSplitTrack();
+        boolean actual = ((Switch) rootView.findViewById(R.id.actual_switch)).getSplitTrack();
+
+        Zapptitude.logSolveBinaryTask(task, context,
+                    topics, expected, actual);
+
+        return new LogSolveBinaryTaskModel(task, context, topics, expected, actual).toString();
     }
 
     //endregion

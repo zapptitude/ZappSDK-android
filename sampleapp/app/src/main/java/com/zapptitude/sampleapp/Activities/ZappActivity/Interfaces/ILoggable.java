@@ -1,4 +1,4 @@
-package mev.zapptitudeapp.Activities.ZappActivity.Interfaces;
+package com.zapptitude.sampleapp.Activities.ZappActivity.Interfaces;
 
 /**
  * Created by andrew on 11.04.16.

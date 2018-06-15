@@ -1,4 +1,4 @@
-package mev.zapptitudeapp.Activities.ZappActivity.Models;
+package com.zapptitude.sampleapp.Activities.ZappActivity.Models;
 
 import com.google.gson.Gson;
 

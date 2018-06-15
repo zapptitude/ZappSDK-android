@@ -1,9 +1,9 @@
-package mev.zapptitudeapp.Activities.ZappActivity;
+package com.zapptitude.sampleapp.Activities.ZappActivity;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,20 +13,19 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.zapptitude.sampleapp.Activities.ZappActivity.Fragments.LogEventFragment;
+import com.zapptitude.sampleapp.Activities.ZappActivity.Fragments.LogTaskInContextFragment;
+import com.zapptitude.sampleapp.Activities.ZappActivity.Fragments.LoggedEventsListFragment;
+import com.zapptitude.sampleapp.Activities.ZappActivity.Fragments.SolveBinaryTaskFragment;
+import com.zapptitude.sampleapp.Activities.ZappActivity.Fragments.SolveFloatTaskFragment;
+import com.zapptitude.sampleapp.Activities.ZappActivity.Fragments.SolveGradTaskFragment;
+import com.zapptitude.sampleapp.Activities.ZappActivity.Fragments.SolveIntTaskFragment;
+import com.zapptitude.sampleapp.Activities.ZappActivity.Fragments.SolveMCTaskFragment;
+import com.zapptitude.sampleapp.Activities.ZappActivity.Interfaces.ILoggable;
+
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import mev.zappsdk.modules.Zapptitude;
-import mev.zapptitudeapp.Activities.ZappActivity.Fragments.LoggedEventsListFragment;
-import mev.zapptitudeapp.Activities.ZappActivity.Interfaces.ILoggable;
-import mev.zapptitudeapp.Activities.ZappActivity.Fragments.LogEventFragment;
-import mev.zapptitudeapp.Activities.ZappActivity.Fragments.LogTaskInContextFragment;
-import mev.zapptitudeapp.Activities.ZappActivity.Fragments.SolveBinaryTaskFragment;
-import mev.zapptitudeapp.Activities.ZappActivity.Fragments.SolveFloatTaskFragment;
-import mev.zapptitudeapp.Activities.ZappActivity.Fragments.SolveGradTaskFragment;
-import mev.zapptitudeapp.Activities.ZappActivity.Fragments.SolveIntTaskFragment;
-import mev.zapptitudeapp.Activities.ZappActivity.Fragments.SolveMCTaskFragment;
 import mev.zapptitudeapp.R;
 
 public class ZappActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {

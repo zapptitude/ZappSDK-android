@@ -1,4 +1,4 @@
-package mev.zapptitudeapp;
+package com.zapptitude.sampleapp;
 
 import mev.zappsdk.modules.ZApplication;
 

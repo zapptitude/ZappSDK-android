@@ -1,4 +1,4 @@
-package mev.zapptitudeapp.Activities.ZappActivity.Fragments;
+package com.zapptitude.sampleapp.Activities.ZappActivity.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,9 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.zapptitude.sampleapp.Activities.ZappActivity.Interfaces.ILoggable;
+import com.zapptitude.sampleapp.Activities.ZappActivity.Models.LogTaskInContextModel;
+
 import mev.zappsdk.modules.Zapptitude;
-import mev.zapptitudeapp.Activities.ZappActivity.Interfaces.ILoggable;
-import mev.zapptitudeapp.Activities.ZappActivity.Models.LogTaskInContextModel;
 import mev.zapptitudeapp.R;
 
 

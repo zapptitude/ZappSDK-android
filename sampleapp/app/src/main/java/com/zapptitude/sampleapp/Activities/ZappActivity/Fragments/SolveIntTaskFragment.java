@@ -1,4 +1,4 @@
-package mev.zapptitudeapp.Activities.ZappActivity.Fragments;
+package com.zapptitude.sampleapp.Activities.ZappActivity.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,13 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.zapptitude.sampleapp.Activities.ZappActivity.Interfaces.ILoggable;
+import com.zapptitude.sampleapp.Activities.ZappActivity.Models.LogSolveIntTaskModel;
+
 import mev.zappsdk.modules.Zapptitude;
-import mev.zapptitudeapp.Activities.ZappActivity.Interfaces.ILoggable;
-import mev.zapptitudeapp.Activities.ZappActivity.Models.LogSolveMCTaskModel;
 import mev.zapptitudeapp.R;
 
 
-public class SolveMCTaskFragment extends Fragment implements ILoggable {
+public class SolveIntTaskFragment extends Fragment implements ILoggable {
 
     //region Views
 
@@ -24,7 +25,7 @@ public class SolveMCTaskFragment extends Fragment implements ILoggable {
 
     //region Constructors
 
-    public SolveMCTaskFragment() {}
+    public SolveIntTaskFragment() {}
 
     //endregion
 
@@ -38,7 +39,7 @@ public class SolveMCTaskFragment extends Fragment implements ILoggable {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_solve_mc_task, container, false);
+        rootView = inflater.inflate(R.layout.fragment_solve_int_task, container, false);
 
         return rootView;
     }
@@ -64,23 +65,21 @@ public class SolveMCTaskFragment extends Fragment implements ILoggable {
         String topics = ((EditText) rootView.findViewById(R.id.topics_editText)).getText().toString();
         String expected = ((EditText) rootView.findViewById(R.id.expected_editText)).getText().toString();
         String actual = ((EditText) rootView.findViewById(R.id.actual_editText)).getText().toString();
-        String among = ((EditText) rootView.findViewById(R.id.among_editText)).getText().toString();
 
         if (task.isEmpty() || context.isEmpty()
                 || topics.isEmpty() || expected.isEmpty()
-                || actual.isEmpty() || among.isEmpty() || among.length() > Integer.MAX_VALUE)
+                || actual.isEmpty() || actual.length() > Integer.MAX_VALUE || expected.length() > Integer.MAX_VALUE)
             return "";
 
         try {
-            Zapptitude.logSolveMCTask(task, context,
-                    topics, expected.charAt(0),
-                    actual.charAt(0), Integer.parseInt(among));
+            Zapptitude.logSolveIntTask(task, context,
+                    topics, Integer.parseInt(expected), Integer.parseInt(actual));
         } catch (Exception e) {
             return e.getMessage();
         }
 
-        return new LogSolveMCTaskModel(task, context, topics, expected.charAt(0),
-                actual.charAt(0), Integer.parseInt(among)).toString();
+        return new LogSolveIntTaskModel(task, context,
+                topics, Integer.parseInt(expected), Integer.parseInt(actual)).toString();
     }
 
     //endregion
