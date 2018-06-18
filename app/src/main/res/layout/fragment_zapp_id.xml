@@ -1,0 +1,102 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_overlay"
+    tools:context=".modules.Views.ZappActivities.Fragments.ZappIdFragment">
+
+
+
+    <!--  Main layout  -->
+    <LinearLayout
+        android:id="@+id/main_layout"
+        android:layout_width="340dp"
+        android:layout_height="260dp"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:background="@drawable/main_box"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
+
+        <!--  Title layout  -->
+        <LinearLayout
+            android:id="@+id/title_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_gravity="center|center_horizontal"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/enter_zid" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/z_sign" />
+
+        </LinearLayout>
+
+        <!--  ZapId EditText  -->
+        <EditText
+            android:id="@+id/zapIdEditText"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:singleLine="true"
+            android:background="@drawable/id_box"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"/>
+
+        <!--  Buttons layout  -->
+        <LinearLayout
+            android:id="@+id/buttons_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <ImageButton
+                android:id="@+id/anonymous_button"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginRight="24dp"
+                android:background="@drawable/anonymous_black" />
+
+            <ImageButton
+                android:id="@+id/question_button"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:background="@drawable/question" />
+
+            <ImageButton
+                android:id="@+id/ok_button"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="24dp"
+                android:background="@drawable/ok" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="invisible" />
+
+</RelativeLayout>
