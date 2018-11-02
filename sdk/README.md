@@ -106,7 +106,7 @@ Zapptitude.logSolveGradTask(String task, String context, String topic, int expec
 
 ============
 =====
-***[Legacy]
+***[Legacy]***
 
 ## Environments
 
