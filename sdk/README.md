@@ -8,6 +8,14 @@ A `Zid` can be obtained from [Zapptitude.com](https://zapptitude.com). User's pr
 be viewd from Zapptitude's dashboard.
 
 ## Integration
+**Android Studio**
+There are two ways in which Zapptitude library can be integrated into your project:
+1. Add following dependency in your `build.gradle`
+```
+compile 'com.zapptitude:zapptitude:0.0.1'
+```
+2. Add [AAR](https://github.com/zapptitude/android-sdk/blob/master/sampleapp/app/libs/zappSDK.aar) under your project's `lib` folder.
+
 **AndroidManifest.xml**
 ```
 <application
@@ -17,7 +25,7 @@ be viewd from Zapptitude's dashboard.
 ```
 
 
-##API
+## API
 
 **To request Zid**
 ```
@@ -34,7 +42,7 @@ zapptitude.setZappId(String zid);
 String zapptitude.userProviderZappId();
 ```
 
-###Tracking Events
+## Tracking Events
 
 **Log Event**
 ```
@@ -72,7 +80,7 @@ Zapptitude.logSolveGradTask(String task, String context, String topic, int expec
 ```
 
 
-###Activity Lifecycle
+## Activity Lifecycle
 
 **Note: Please implement this methods to your every activity to provide stopping and resuming background process of log collection in your app.**
 
@@ -96,7 +104,11 @@ Zapptitude.logSolveGradTask(String task, String context, String topic, int expec
     }
 ```    
 
-###Environments
+============
+=====
+***[Legacy]
+
+## Environments
 
 To switch environment on ZappSDK change **URL type** in ZappInternal() constructor.
 Example: Logger.getInstance().initLogger(cleanedAppId, **URLType.PROD_ENVIRONMENT.getValue()**); for **Prod** or Logger.getInstance().initLogger(cleanedAppId, **URLType.DEV_ENVIRONMENT.getValue()**); for **Dev**
